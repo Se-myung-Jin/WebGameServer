@@ -1,0 +1,2 @@
+# WebGameServer
+for .NET Core
