@@ -1,0 +1,94 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36" version="26.0.14">
+  <diagram name="Page-1" id="qNC670RrADrDsb5PiARq">
+    <mxGraphModel dx="2074" dy="1098" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#D8F8FF" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-1" value="" style="rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="R1hGMJpe7PTca6z6YNnj-2" target="R1hGMJpe7PTca6z6YNnj-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-2" value="&lt;div&gt;점검 체크&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="109" y="415" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-3" value="No" style="rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="R1hGMJpe7PTca6z6YNnj-5">
+          <mxGeometry y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="169" y="625" as="targetPoint" />
+            <mxPoint x="169" y="595" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-4" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;" edge="1" parent="1" source="R1hGMJpe7PTca6z6YNnj-5" target="R1hGMJpe7PTca6z6YNnj-6">
+          <mxGeometry y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-5" value="점검 기간?" style="rhombus;whiteSpace=wrap;html=1;shadow=0;fontFamily=Helvetica;fontSize=12;align=center;strokeWidth=1;spacing=6;spacingTop=-4;" vertex="1" parent="1">
+          <mxGeometry x="119" y="505" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-6" value="점검 팝업" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="269" y="525" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-7" value="Yes" style="rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="R1hGMJpe7PTca6z6YNnj-100" target="R1hGMJpe7PTca6z6YNnj-9">
+          <mxGeometry x="0.3333" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="169" y="665" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-8" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" target="R1hGMJpe7PTca6z6YNnj-11">
+          <mxGeometry y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="219" y="665" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-9" value="게임 서버 통신" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="109" y="775" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-11" value="인증 실패 처리" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="269" y="645" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="599" y="665" as="targetPoint" />
+            <mxPoint x="529" y="665" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-17" value="YES" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R1hGMJpe7PTca6z6YNnj-16">
+          <mxGeometry x="-0.0571" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="R1hGMJpe7PTca6z6YNnj-20" target="R1hGMJpe7PTca6z6YNnj-22">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="745" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-19" value="NO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R1hGMJpe7PTca6z6YNnj-18">
+          <mxGeometry x="-0.1667" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-20" value="게스트?" style="rhombus;whiteSpace=wrap;html=1;shadow=0;fontFamily=Helvetica;fontSize=12;align=center;strokeWidth=1;spacing=6;spacingTop=-4;" vertex="1" parent="1">
+          <mxGeometry x="430" y="625" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-21" value="게임 서버 통신" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="599" y="645" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-22" value="&lt;div&gt;다시 로그인 OR&lt;/div&gt;&lt;div&gt;다른 계정 로그인&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="420" y="775" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-57" value="시퀀스 플로우" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="119" y="280" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-100" value="인증 요청" style="rhombus;whiteSpace=wrap;html=1;shadow=0;fontFamily=Helvetica;fontSize=12;align=center;strokeWidth=1;spacing=6;spacingTop=-4;" vertex="1" parent="1">
+          <mxGeometry x="119" y="625" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="R1hGMJpe7PTca6z6YNnj-102" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="R1hGMJpe7PTca6z6YNnj-11" target="R1hGMJpe7PTca6z6YNnj-20">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="609" y="675" as="targetPoint" />
+            <mxPoint x="539" y="675" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
