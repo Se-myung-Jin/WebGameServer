@@ -19,5 +19,9 @@
     <NoWarn>1701;1702;8618;8603;8600;8601;8602;8604;8619;8625</NoWarn>
     <DefineConstants>$(DefineConstants);ENABLE_TABLE_LOAD_LOG</DefineConstants>
   </PropertyGroup>
+	
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
 
 </Project>
