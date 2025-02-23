@@ -18,7 +18,7 @@ public class ProcessStarter
 
     readonly AutoResetEvent waitEvent = new(false);
 
-    public async Task Start(ServiceConfig config)
+    public async Task StartAsync(ServiceConfig config)
     {
         DisableQuickEdit();
         
@@ -47,7 +47,6 @@ public class ProcessStarter
         }
 
         consoleMode &= ~ENABLE_QUICK_EDIT;
-
         if (SetConsoleMode(consoleHandle, consoleMode) == false)
         {
             return false;
@@ -80,7 +79,7 @@ public class ProcessStarter
     {
         await Task.FromResult(0);
     }
-    protected virtual async Task OnWaitExitSignal()
+    protected virtual async Task OnWaitExitSignalAsync()
     {
         if (OperatingSystem.IsWindows() == false)
         {
@@ -106,20 +105,20 @@ public class ProcessStarter
         Environment.Exit(9999);
     }
 
-    public virtual void AppExit(string reason)
+    public virtual void CloseApp(string reason)
     {
         waitEvent.Set();
     }
 
-    public void AppCloseEvent(object? sender, EventArgs args)
+    public void CloseAppEvent(object? sender, EventArgs args)
     {
-        AppExit("ApplicationExit");
+        CloseApp("CloseApplication");
     }
 
-    public void ConsoleCancelEvent(object? sender, ConsoleCancelEventArgs args)
+    public void CloseConsoleEvent(object? sender, ConsoleCancelEventArgs args)
     {
         args.Cancel = true;
 
-        AppExit("ApplicationCancel");
+        CloseApp("CloseConsole");
     }
 }
