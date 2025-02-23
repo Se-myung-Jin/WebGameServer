@@ -6,5 +6,6 @@ public class MaintenanceProcessStarter : ProcessStarter
     {
         await ServiceWeb.Instance.StartAsync(Global.ServiceConfig.MaintenanceConfig.Url, null);
     }
+
     protected override Task OnWaitExitSignalAsync() => Task.CompletedTask;
 }
