@@ -25,5 +25,11 @@ class Program
             }
             return;
         }
+
+        await Global.InitializeAsync("Maintenance", "maintenance.toml");
+
+        await processStarter.StartAsync(Global.ServiceConfig);
+
+        Global.Destruct();
     }
 }

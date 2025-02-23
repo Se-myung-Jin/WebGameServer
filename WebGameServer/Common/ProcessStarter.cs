@@ -28,7 +28,7 @@ public class ProcessStarter
         await InitializeOthersAsync(config);
         await InitializeServiceAsync(config);
 
-        await OnWaitExitSignal();
+        await OnWaitExitSignalAsync();
     }
 
     protected static bool DisableQuickEdit()
@@ -86,7 +86,7 @@ public class ProcessStarter
             PosixSignalRegistration.Create((PosixSignal)(10) /* SIGUSR1 */, context =>
             {
                 context.Cancel = true;
-                AppExit($"PosixSignal {context.Signal}");
+                CloseApp($"PosixSignal {context.Signal}");
             });
         }
 

@@ -14,7 +14,7 @@ public class ServiceConfig
     public string PrivateAddress { get; private set; }
     public MaintenanceConfig MaintenanceConfig { get; set; }
 
-    public async Task initializeAsync()
+    public async Task InitializeAsync()
     {
         PrivateAddress = NetworkIp.GetPrivateAddress();
         PublicAddress = UsePublicAddress ? await NetworkIp.GetPublicIpAsync() : PrivateAddress;
