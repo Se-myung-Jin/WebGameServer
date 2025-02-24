@@ -4,7 +4,10 @@ public class MaintenanceProcessStarter : ProcessStarter
 {
     protected override async Task InitializeServiceAsync(ServiceConfig config)
     {
-        await ServiceWeb.Instance.StartAsync(Global.ServiceConfig.MaintenanceConfig.Url, null);
+        if (Global.ServiceConfig.MaintenanceConfig.Enable)
+        {
+            await ServiceWeb.Instance.StartAsync(Global.ServiceConfig.MaintenanceConfig.Url, null);
+        }
     }
 
     protected override Task OnWaitExitSignalAsync() => Task.CompletedTask;
