@@ -31,10 +31,10 @@ public class ServiceWeb : Singleton<ServiceWeb>
                    .AllowCredentials();
         });
         
-        //RestApiRouter.Instance.Initialize();
+        RestApiRouter.Instance.Initialize();
 
         application.MapGet("/Hello", async (HttpContext context) => await context.Response.WriteAsync("Hello"));
-        //application.MapPost("/RestApi/{name:alpha}", async (HttpContext context) => await RestApiRouter.Instance.Process(context));
+        application.MapPost("/RestApi/{name:alpha}", async (HttpContext context) => await RestApiRouter.Instance.Process(context));
 
         application.Use((context, next) =>
         {
