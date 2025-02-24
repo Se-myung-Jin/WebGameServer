@@ -1,9 +1,8 @@
 ﻿using MemoryPack;
-using System.Runtime.InteropServices.JavaScript;
 
 namespace Common;
 
-[MemoryPack.MemoryPackable]
+[MemoryPackable]
 public partial class AccessToken
 {
     public long TimeTick { get; set; }
@@ -14,7 +13,7 @@ public partial class AccessToken
 };
 
 [WebProtocol]
-[MemoryPack.MemoryPackable(MemoryPack.GenerateType.VersionTolerant, MemoryPack.SerializeLayout.Sequential)]
+[MemoryPackable(GenerateType.VersionTolerant, SerializeLayout.Sequential)]
 public partial class PKT_WEB_CS_MAINTENANCE : IWebPacket
 {
     public string HashKey { get; set; }
@@ -35,7 +34,7 @@ public partial class PKT_WEB_CS_MAINTENANCE : IWebPacket
 };
 
 [WebProtocol]
-[MemoryPack.MemoryPackable(MemoryPack.GenerateType.VersionTolerant, MemoryPack.SerializeLayout.Sequential)]
+[MemoryPackable(GenerateType.VersionTolerant, SerializeLayout.Sequential)]
 public partial class PKT_WEB_SC_MAINTENANCE : IWebPacket
 {
     public DateTime? StartTIme { get; set; }
