@@ -35,6 +35,11 @@ public class ServiceStatusMonitor
     public void Process()
     {
         UpdateData();
+
+        if (_enable)
+        {
+            
+        }
     }
 
     protected virtual void UpdateData()

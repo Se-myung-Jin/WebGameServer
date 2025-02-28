@@ -4,7 +4,10 @@ public class MaintenanceProcessStarter : ProcessStarter
 {
     protected override async Task InitializeOthersAsync(ServiceConfig config)
     {
-        new TimeJob(Global.ServiceStatusMonitor.Process, 3000, "JobThreadTest").Start();
+        PlayerDataDeleteManager.Instance.Initialize();
+
+        new TimeJob(PlayerDataDeleteManager.Instance.Process, 10000, "PlayerDataDeleteManager.Instance.Process").Start();
+        new TimeJob(Global.ServiceStatusMonitor.Process, 30000, "JobThreadTest").Start();
     }
 
     protected override async Task InitializeServiceAsync(ServiceConfig config)
