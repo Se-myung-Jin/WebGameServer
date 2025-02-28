@@ -29,6 +29,9 @@ public class JobScheduler : PerformanceCheckScheduler
 
             }
 
+            // TODO : 추후 오브젝트 풀 빼도 될 듯
+            //JobFactory.Instance.Release(job as InstanceJob);
+
             _elapseTimer.Reset();
         }
     }
