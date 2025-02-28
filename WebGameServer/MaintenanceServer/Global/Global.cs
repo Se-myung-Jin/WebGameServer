@@ -6,7 +6,7 @@ public class Global : ServiceCommon
 {
     public static async Task InitializeAsync(string appName, string configName)
     {
-        SystemGlobal.Instance.Initialize(appName);
+        SystemGlobal.Instance.Initialize(appName, dbThreadCount: 0);
 
         await InitializeConfigAsync(configName);
 
