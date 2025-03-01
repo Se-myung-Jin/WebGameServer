@@ -8,14 +8,14 @@ public interface IJob
     void Execute();
 }
 
-public abstract class Job : IJob
+public abstract class BaseJob : IJob
 {
     protected Action _action = null;
     public string Description { get; protected set; }
 
-    public Job() { }
+    public BaseJob() { }
 
-    public Job(Action action, string description)
+    public BaseJob(Action action, string description)
     {
         _action = action;
         Description = description;

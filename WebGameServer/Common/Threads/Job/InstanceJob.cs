@@ -1,6 +1,6 @@
 ﻿namespace Common;
 
-public class InstanceJob : Job
+public class InstanceJob : BaseJob
 {
     public static JobScheduler OwnerProcess = null;
 

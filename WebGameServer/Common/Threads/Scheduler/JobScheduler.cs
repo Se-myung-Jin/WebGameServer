@@ -2,7 +2,7 @@
 
 public class JobScheduler : PerformanceCheckScheduler
 {
-    private ConcurrentQueue<Job> _queue = new ConcurrentQueue<Job>();
+    private ConcurrentQueue<BaseJob> _queue = new ConcurrentQueue<BaseJob>();
 
     protected override void OnProcess(long slice)
     {
@@ -36,7 +36,7 @@ public class JobScheduler : PerformanceCheckScheduler
         }
     }
 
-    public void Add(Job job)
+    public void Add(BaseJob job)
     {
         _queue.Enqueue(job);
     }

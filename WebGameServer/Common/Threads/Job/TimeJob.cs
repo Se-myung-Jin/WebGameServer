@@ -1,6 +1,6 @@
 ﻿namespace Common;
 
-public class TimeJob : Job
+public class TimeJob : BaseJob
 {
     public static TimeScheduler OwnerScheduler = null;
 
