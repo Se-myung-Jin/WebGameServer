@@ -62,6 +62,16 @@ public class ProcessStarter
 
     protected virtual async Task InitializeDatabaseAsync(ServiceConfig config)
     {
+        DatabaseContextContainer.Instance.Create(config.ConfigDatabase.DbPoolConfig());
+
+        spGetDbConfig proc = new();
+        if (proc.Run() == false)
+        {
+            throw new Exception("initializeDatabaseAsync spGetDbConfig or Variable Error");
+        }
+
+        DatabaseContextContainer.Instance.Initialize();
+
         await Task.FromResult(0);
     }
 
