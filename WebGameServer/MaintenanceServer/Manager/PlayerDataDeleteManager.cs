@@ -16,16 +16,22 @@ public class PlayerDataDeleteManager : Singleton<PlayerDataDeleteManager>
 
     private void DeletePlayerData()
     {
-        // 가져와서
         if (_deletedPlayers == null || _deletedPlayers.Count == 0)
         {
-            
+            var proc = new spSelectDeletedPlayer();
+            if (proc.Run())
+            {
+                _deletedPlayers = proc.deletedPlayers;
+            }
         }
 
-        // 삭제하기
         if (_deletedPlayers != null && _deletedPlayers.Count > 0)
         {
+            var deletedPlayer = _deletedPlayers[0];
+            var proc = new spDeletePlayerData(deletedPlayer);
+            proc.Run();
 
+            _deletedPlayers.Remove(deletedPlayer);
         }
     }
 }
