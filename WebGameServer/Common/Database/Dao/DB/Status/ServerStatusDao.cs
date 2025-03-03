@@ -1,6 +1,7 @@
 ﻿namespace Common;
 
-public class ServerStatusDao
+[Table("Servers", "serverStatus")]
+public class ServerStatusDao : BaseDao
 {
     public EServerType ServerType { get; set; }
     public string PublicAddress { get; set; }

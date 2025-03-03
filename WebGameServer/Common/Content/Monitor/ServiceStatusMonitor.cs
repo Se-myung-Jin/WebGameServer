@@ -34,11 +34,22 @@ public class ServiceStatusMonitor
 
     public void Process()
     {
+        if (_initialize == false)
+        {
+            _initialize = true;
+            if (_data != null)
+            {
+                spDeleteServerStatus proc = new(_data);
+                proc.Run();
+            }
+        }
+
         UpdateData();
 
         if (_enable)
         {
-            
+            var proc = new spUpdateServerStatus(_data);
+            proc.StartPoolPost();
         }
     }
 
@@ -49,8 +60,6 @@ public class ServiceStatusMonitor
         _data.HighCpuPercent = GetHighCpuUsage();
         _data.MemoryGb = GetRamUsage();
         _data.HighMemoryGb = GetHighRamUsage();
-
-        Console.WriteLine($"CPU Percent: {_data.CpuPercent}, High CPU Percent: {_data.HighCpuPercent}, Memory: {_data.MemoryGb}, HighMemoryGb: {_data.HighMemoryGb}");
     }
 
     private float GetCpuUsage()
