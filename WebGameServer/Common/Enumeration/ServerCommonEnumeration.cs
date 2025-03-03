@@ -21,3 +21,13 @@ public enum EReplicaType
     SLAVE,
     MAX,
 };
+
+public enum EMongoDbKind
+{
+    Main,
+};
+
+public enum ERedisKeyType
+{
+    Auth,
+};

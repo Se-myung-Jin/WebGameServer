@@ -2,11 +2,6 @@
 
 namespace Common;
 
-public enum EMongoDbKind
-{
-    Main,
-};
-
 public class TableAttribute : Attribute
 {
     public readonly string DbName;

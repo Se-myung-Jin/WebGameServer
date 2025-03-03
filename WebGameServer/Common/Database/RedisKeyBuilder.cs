@@ -1,10 +1,5 @@
 ﻿namespace Common;
 
-public enum ERedisKeyType
-{
-    Auth,
-};
-
 public static class RedisKeyBuilder
 {
     static ThreadLocal<StringBuilder> _ThreadGlobalKeyBuilder = new ThreadLocal<StringBuilder>(() => new StringBuilder());

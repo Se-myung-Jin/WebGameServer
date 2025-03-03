@@ -27,6 +27,15 @@ public abstract class ServiceCommon
     {
         ServiceConfig = TomlLoader.Load<ServiceConfig>($"config/{config}");
 
+        LoadDataBaseConfig();
+
         await ServiceConfig.InitializeAsync();
+    }
+
+    public static void LoadDataBaseConfig()
+    {
+        var databaseConfig = TomlLoader.Load<ServiceConfig>($"config/database.toml");
+        
+        ServiceConfig.ConfigDatabase = databaseConfig.ConfigDatabase;
     }
 }
