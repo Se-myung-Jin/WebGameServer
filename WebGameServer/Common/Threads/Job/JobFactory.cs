@@ -8,7 +8,7 @@ public class JobFactory
 
     private JobFactory()
     {
-        _instanceJobPool.Initialize(100);
+        _instanceJobPool.Initialize(10000);
     }
 
     public InstanceJob CreateInstanceJob() => _instanceJobPool.Acuire();

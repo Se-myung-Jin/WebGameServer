@@ -43,6 +43,5 @@ public abstract class ThreadContainer
 
     public int GetThreadCount() => _threadList.Count;
     protected int GetThreadId(int index) => _threadList[index].ManagedThreadId;
-
     public abstract void Process();
 }

@@ -36,6 +36,5 @@ public abstract class BaseScheduler
     }
 
     public virtual void Release() { }
-
     protected virtual void OnProcess(long slice) { }
 }
