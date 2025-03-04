@@ -23,6 +23,19 @@ public class ConfigDatabase
     }
 }
 
+public class ConfigRedis
+{
+    public ushort DbId { get; set; }
+    public string Name { get; set; }
+    public string Server { get; set; }
+    public bool Enable { get; set; }
+
+    public DBConfig DbPoolConfig()
+    {
+        return new DBConfig(Name, EDataBaseCategory.REDIS, EReplicaType.MASTER, Server, DbId);
+    }
+}
+
 public class ServiceConfig
 {
     public bool UsePublicAddress { get; set; }

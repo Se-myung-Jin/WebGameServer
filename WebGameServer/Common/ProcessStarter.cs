@@ -70,6 +70,7 @@ public class ProcessStarter
             throw new Exception("initializeDatabaseAsync spGetDbConfig or Variable Error");
         }
 
+        DatabaseContextContainer.Instance.Create(proc.Result.RedisList.ConvertAll(x => x.DbPoolConfig()));
         DatabaseContextContainer.Instance.Initialize();
 
         await Task.FromResult(0);
