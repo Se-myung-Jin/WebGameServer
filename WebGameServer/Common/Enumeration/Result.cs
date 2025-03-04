@@ -89,4 +89,6 @@ public enum EResult
     /// 네이밍 중복
     /// </summary>
     Error_DuplicateName,
+    Error_TableNotFound,
+    Error_ExpireSlot,
 };
