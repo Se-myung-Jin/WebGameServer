@@ -111,6 +111,11 @@ public class MongoDbContextContainer
 
     public void Destory()
     {
+        foreach (var connection in _connectionMap.Values)
+        {
+            connection.Dispose();
+        }
+
         _connectionMap.Clear();
     }
 
