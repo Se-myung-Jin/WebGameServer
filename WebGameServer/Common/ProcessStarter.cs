@@ -71,6 +71,7 @@ public class ProcessStarter
         }
 
         DatabaseContextContainer.Instance.Create(proc.Result.RedisList.ConvertAll(x => x.DbPoolConfig()));
+        DatabaseContextContainer.Instance.Create(proc.Result.LogDatabase.DbPoolConfig());
         DatabaseContextContainer.Instance.Initialize();
 
         await Task.FromResult(0);

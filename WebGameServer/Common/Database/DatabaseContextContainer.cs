@@ -19,6 +19,7 @@ public sealed class DatabaseContextContainer
     public static DatabaseContextContainer Instance = instance.Value;
     public MongoDbContextContainer MongoDb { get; init; } = new MongoDbContextContainer();
     public RedisContextContainer Redis { get; init; } = new RedisContextContainer();
+    public MySqlContextContainer MySql { get; init; } = new MySqlContextContainer();
 
     private DatabaseContextContainer()
     {
@@ -35,7 +36,10 @@ public sealed class DatabaseContextContainer
             case EDataBaseCategory.REDIS:
                 Redis.Add(config);
                 break;
-        };
+            case EDataBaseCategory.MYSQL:
+                MySql.Add(config);
+                break;
+        }
     }
 
     public void Create(List<DBConfig> configList)
@@ -50,6 +54,7 @@ public sealed class DatabaseContextContainer
     {
         MongoDb.Initialize();
         Redis.Initialize();
+        MySql.Initialize();
     }
 
     public void Destory()

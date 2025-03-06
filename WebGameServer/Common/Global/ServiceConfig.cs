@@ -7,6 +7,13 @@ public class MaintenanceConfig
     public bool Enable { get; set; }
 };
 
+public class LogAggregationConfig
+{
+    public string Url { get; set; }
+    public string Domain { get; set; }
+    public bool Enable { get; set; }
+};
+
 public class ConfigDatabase
 {
     public string Name { get; set; }
@@ -36,12 +43,26 @@ public class ConfigRedis
     }
 }
 
+public class ConfigLogDatabase
+{
+    public string Name { get; set; }
+    public string Server { get; set; }
+    public string Category { get; set; }
+    public string Replica { get; set; }
+
+    public DBConfig DbPoolConfig()
+    {
+        return new DBConfig(Name, EDataBaseCategory.MYSQL, EReplicaType.MASTER, Server, 0);
+    }
+}
+
 public class ServiceConfig
 {
     public bool UsePublicAddress { get; set; }
     public string PublicAddress { get; private set; }
     public string PrivateAddress { get; private set; }
     public MaintenanceConfig MaintenanceConfig { get; set; }
+    public LogAggregationConfig LogAggregationConfig { get; set; }
     public ConfigDatabase ConfigDatabase { get; set; }
 
     public async Task InitializeAsync()
