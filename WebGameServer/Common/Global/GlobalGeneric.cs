@@ -1,4 +1,6 @@
-﻿global using System;
+﻿global using Common;
+
+global using System;
 global using System.IO;
 global using System.Text;
 global using System.Threading;

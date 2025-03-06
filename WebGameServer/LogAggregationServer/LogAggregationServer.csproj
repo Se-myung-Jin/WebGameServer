@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <BaseOutputPath>../../publish</BaseOutputPath>
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+	<InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="bin\**" />
+    <Compile Remove="Release_Linux\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <EmbeddedResource Remove="Release_Linux\**" />
+    <None Remove="bin\**" />
+    <None Remove="Release_Linux\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+	<Compile Include="..\Common\Global\GlobalGeneric.cs" />
+  </ItemGroup>
+
+</Project>
