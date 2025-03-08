@@ -1,0 +1,4 @@
+[GameConfig]
+Url = "http://*:10001"
+Domain = "http://172.16.13.183:10001"
+Enable = true

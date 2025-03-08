@@ -1,4 +1,4 @@
-﻿namespace LogAggregationServer;
+﻿namespace GameServer;
 
 public class Global : ServiceCommon
 {
@@ -8,7 +8,7 @@ public class Global : ServiceCommon
 
         await InitializeConfigAsync(configName);
 
-        ServiceStatusMonitor.Initialize(new ServerStatusDao { ServerType = EServerType.LogAggregation, PublicAddress = ServiceConfig.PublicAddress, PrivateAddress = ServiceConfig.PrivateAddress, CommitHash = GetCommitHash() });
+        ServiceStatusMonitor.Initialize(new ServerStatusDao { ServerType = EServerType.Game, PublicAddress = ServiceConfig.PublicAddress, PrivateAddress = ServiceConfig.PrivateAddress, CommitHash = GetCommitHash() });
         ServiceStatusMonitor.SetEnable(true);
 
         SystemGlobal.Instance.StartScheduler();

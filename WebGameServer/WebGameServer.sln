@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintenanceServer", "Mainte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogAggregationServer", "LogAggregationServer\LogAggregationServer.csproj", "{A7B04990-A056-45F4-9CE9-31D62043EE01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer", "GameServer\GameServer.csproj", "{69E4AB4A-13E8-4FFB-BC25-465CD5A7FC8C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A7B04990-A056-45F4-9CE9-31D62043EE01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7B04990-A056-45F4-9CE9-31D62043EE01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7B04990-A056-45F4-9CE9-31D62043EE01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69E4AB4A-13E8-4FFB-BC25-465CD5A7FC8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69E4AB4A-13E8-4FFB-BC25-465CD5A7FC8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69E4AB4A-13E8-4FFB-BC25-465CD5A7FC8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69E4AB4A-13E8-4FFB-BC25-465CD5A7FC8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

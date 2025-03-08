@@ -1,18 +1,25 @@
 ﻿namespace Common;
 
+public class GameConfig
+{
+    public string Url { get; set; }
+    public string Domain { get; set; }
+    public bool Enable { get; set; }
+}
+
 public class MaintenanceConfig
 {
     public string Url { get; set; }
     public string Domain { get; set; }
     public bool Enable { get; set; }
-};
+}
 
 public class LogAggregationConfig
 {
     public string Url { get; set; }
     public string Domain { get; set; }
     public bool Enable { get; set; }
-};
+}
 
 public class ConfigDatabase
 {
@@ -61,6 +68,7 @@ public class ServiceConfig
     public bool UsePublicAddress { get; set; }
     public string PublicAddress { get; private set; }
     public string PrivateAddress { get; private set; }
+    public GameConfig GameConfig { get; set; }
     public MaintenanceConfig MaintenanceConfig { get; set; }
     public LogAggregationConfig LogAggregationConfig { get; set; }
     public ConfigDatabase ConfigDatabase { get; set; }

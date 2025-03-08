@@ -4,6 +4,8 @@ public enum EServerType
 {
     Undefine = 0,
     Maintenance,
+    Game,
+    LogAggregation,
 };
 
 public enum EDataBaseCategory
