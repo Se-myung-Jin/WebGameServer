@@ -1,4 +1,8 @@
-﻿namespace Common;
+﻿using BlindServerCore.Log;
+using System;
+using System.IO;
+
+namespace BlindServerCore.Utils;
 
 public static class TomlLoader
 {
@@ -19,7 +23,7 @@ public static class TomlLoader
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return null;

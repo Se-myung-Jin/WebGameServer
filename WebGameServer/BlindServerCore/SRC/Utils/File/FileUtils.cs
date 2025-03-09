@@ -1,4 +1,7 @@
-﻿namespace Common;
+﻿using System;
+using System.IO;
+
+namespace BlindServerCore.Utils;
 
 public static class FileUtils
 {

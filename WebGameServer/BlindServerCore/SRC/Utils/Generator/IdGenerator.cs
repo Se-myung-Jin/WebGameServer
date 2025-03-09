@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 
-namespace Common;
+namespace BlindServerCore.Utils;
 
 /// <summary>
 /// Snowflake 방식을 이용한 유니크한 ID 생성

@@ -1,6 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
-namespace Common;
+namespace BlindServerCore.Utils;
 
 public class NetworkIp
 {

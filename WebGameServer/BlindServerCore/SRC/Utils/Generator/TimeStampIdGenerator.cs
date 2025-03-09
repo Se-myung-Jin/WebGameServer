@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Common;
+namespace BlindServerCore.Utils;
 
 public class TimeStampIdGenerator
 {

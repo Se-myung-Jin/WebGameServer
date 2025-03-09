@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
-namespace Common;
+namespace BlindServerCore.Utils;
 
 public abstract class IdGeneratorTimeStamp
 {
