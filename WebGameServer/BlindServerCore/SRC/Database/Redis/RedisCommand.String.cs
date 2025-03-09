@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using BlindServerCore.Log;
+using StackExchange.Redis;
 using System;
 using System.Threading.Tasks;
 using DBContext = BlindServerCore.Database.DatabaseContextContainer;
@@ -18,7 +19,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return -1;
@@ -35,7 +36,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return -1;
@@ -50,7 +51,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return false;
@@ -65,7 +66,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return false;
@@ -80,7 +81,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return default;
@@ -97,7 +98,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return default;
@@ -114,7 +115,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return null;
@@ -129,7 +130,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return default;
@@ -146,7 +147,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return default;

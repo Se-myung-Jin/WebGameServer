@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using BlindServerCore.Log;
 using BlindServerCore.Utils;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -188,7 +189,7 @@ public class MongoDbContextContainer
                 }
                 catch (Exception ex)
                 {
-
+                    LogSystem.Log.Error(ex);
                 }
             }
         }

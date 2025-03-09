@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using BlindServerCore.Log;
+using StackExchange.Redis;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return count;
@@ -34,7 +35,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return count;
@@ -55,7 +56,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return count;
@@ -76,7 +77,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return count;
@@ -105,7 +106,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return count;
@@ -135,7 +136,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return count;
@@ -161,6 +162,7 @@ public partial class RedisCommand
         catch (Exception ex)
         {
             fillCount = 0;
+            LogSystem.Log.Error(ex);
         }
 
         return fillCount;
@@ -186,6 +188,7 @@ public partial class RedisCommand
         catch (Exception ex)
         {
             fillCount = 0;
+            LogSystem.Log.Error(ex);
         }
 
         return fillCount;
@@ -210,7 +213,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return fillCount;
@@ -235,7 +238,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return fillCount;
@@ -257,7 +260,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return null;
@@ -279,7 +282,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return null;
@@ -294,7 +297,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
     }
 
@@ -307,7 +310,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
     }
 
@@ -321,7 +324,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
         return isExists;
     }
@@ -336,7 +339,7 @@ public partial class RedisCommand
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
         return isExists;
     }

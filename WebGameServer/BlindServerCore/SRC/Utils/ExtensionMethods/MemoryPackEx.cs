@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlindServerCore.Log;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 namespace BlindServerCore;
@@ -13,7 +14,7 @@ public static partial class GlobalExtentionMethods
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
         return default;
     }
@@ -26,7 +27,7 @@ public static partial class GlobalExtentionMethods
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
     }
 
@@ -43,7 +44,7 @@ public static partial class GlobalExtentionMethods
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
         return default;
     }
@@ -61,7 +62,7 @@ public static partial class GlobalExtentionMethods
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
         return null;
     }
@@ -81,7 +82,7 @@ public static partial class GlobalExtentionMethods
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
         return default(T);
     }
@@ -99,7 +100,7 @@ public static partial class GlobalExtentionMethods
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
         return default(T);
     }

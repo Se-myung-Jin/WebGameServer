@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using BlindServerCore.Log;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -99,7 +100,7 @@ public class RedisContextContainer
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return -1;
