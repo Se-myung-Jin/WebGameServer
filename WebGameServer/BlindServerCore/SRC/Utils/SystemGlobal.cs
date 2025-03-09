@@ -1,4 +1,9 @@
-﻿namespace Common;
+﻿using BlindServerCore.Log;
+using BlindServerCore.Threads;
+using BlindServerCore.Utils;
+using System.Threading;
+
+namespace BlindServerCore;
 
 public class SystemGlobal : Singleton<SystemGlobal>
 {
@@ -8,6 +13,8 @@ public class SystemGlobal : Singleton<SystemGlobal>
 
     public void Initialize(string appName, byte jobThreadCount = 4, byte dbThreadCount = 8)
     {
+        LogSystem.Initialize(appName);
+
         InitializeThreadPool();
         InitScheduler(jobThreadCount, dbThreadCount);
         InitializeRecycleMemory();

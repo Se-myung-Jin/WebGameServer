@@ -32,9 +32,5 @@
   <ItemGroup>
 	<ProjectReference Include="..\BlindServerCore\BlindServerCore.csproj" />
   </ItemGroup>
-	
-  <ItemGroup>
-    <Folder Include="Utils\" />
-  </ItemGroup>
 
 </Project>
