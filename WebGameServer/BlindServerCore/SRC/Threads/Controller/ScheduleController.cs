@@ -1,4 +1,8 @@
-﻿namespace Common;
+﻿using BlindServerCore.Log;
+using System;
+using System.Collections.Generic;
+
+namespace BlindServerCore.Threads;
 
 public class ScheduleController : ThreadContainer
 {
@@ -73,7 +77,7 @@ public class ScheduleController : ThreadContainer
             }
             catch (Exception ex)
             {
-
+                LogSystem.Log.Error(ex);
             }
         }
     }

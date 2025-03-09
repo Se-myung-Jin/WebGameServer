@@ -1,4 +1,7 @@
-﻿namespace Common;
+﻿using BlindServerCore.Utils;
+using System;
+
+namespace BlindServerCore.Threads;
 
 public class JobFactory
 {

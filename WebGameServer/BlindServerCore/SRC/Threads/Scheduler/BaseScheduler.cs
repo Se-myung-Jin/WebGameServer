@@ -1,4 +1,8 @@
-﻿namespace Common;
+﻿using BlindServerCore.Log;
+using System;
+using System.Threading;
+
+namespace BlindServerCore.Threads;
 
 public abstract class BaseScheduler
 {
@@ -26,7 +30,7 @@ public abstract class BaseScheduler
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         if (_enableMultiThread == false)

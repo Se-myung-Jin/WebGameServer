@@ -1,4 +1,6 @@
-﻿namespace Common;
+﻿using System.Collections.Generic;
+
+namespace BlindServerCore.Threads;
 
 public abstract class ThreadContainer
 {

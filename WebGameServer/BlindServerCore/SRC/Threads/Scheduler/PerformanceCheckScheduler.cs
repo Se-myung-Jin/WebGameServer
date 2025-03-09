@@ -1,6 +1,9 @@
-﻿using System.Diagnostics;
+﻿using BlindServerCore.Log;
+using System;
+using System.Diagnostics;
+using System.Threading;
 
-namespace Common;
+namespace BlindServerCore.Threads;
 
 public class PerformanceCheckScheduler : BaseScheduler
 {
@@ -19,7 +22,7 @@ public class PerformanceCheckScheduler : BaseScheduler
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         _elapseTimer.Reset();

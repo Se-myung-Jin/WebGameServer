@@ -1,4 +1,7 @@
-﻿namespace Common;
+﻿using BlindServerCore.Log;
+using System;
+
+namespace BlindServerCore.Threads;
 
 public interface IJob
 {
@@ -32,7 +35,7 @@ public abstract class BaseJob : IJob
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
     }
 

@@ -1,4 +1,8 @@
-﻿namespace Common;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+
+namespace BlindServerCore.Utils;
 
 public class ObjectPool<T> where T : new()
 {

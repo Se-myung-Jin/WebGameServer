@@ -1,4 +1,8 @@
-﻿namespace Common;
+﻿using BlindServerCore.Log;
+using System;
+using System.Collections.Concurrent;
+
+namespace BlindServerCore.Threads;
 
 public class JobScheduler : PerformanceCheckScheduler
 {
@@ -19,7 +23,7 @@ public class JobScheduler : PerformanceCheckScheduler
             }
             catch (Exception ex)
             {
-
+                LogSystem.Log.Error(ex);
             }
 
             _elapseTimer.Stop();

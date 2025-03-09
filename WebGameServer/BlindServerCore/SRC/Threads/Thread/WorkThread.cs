@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace BlindServerCore.Threads;
 
 public class WorkThread : BaseThread
 {

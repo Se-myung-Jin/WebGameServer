@@ -1,4 +1,8 @@
-﻿namespace Common;
+﻿using BlindServerCore.Log;
+using System;
+using System.Threading;
+
+namespace BlindServerCore.Threads;
 
 public class BaseThread
 {
@@ -40,9 +44,9 @@ public class BaseThread
         {
             _thread.Join(30000);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
     }
 
@@ -60,9 +64,9 @@ public class BaseThread
             {
                 Process();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
+                LogSystem.Log.Error(ex);
             }
         }
     }

@@ -1,4 +1,9 @@
-﻿namespace Common;
+﻿using BlindServerCore.Log;
+using System;
+using System.Collections.Concurrent;
+using System.Threading;
+
+namespace BlindServerCore.Threads;
 
 public class TimeScheduler : JobScheduler
 {
@@ -25,7 +30,7 @@ public class TimeScheduler : JobScheduler
                 }
                 catch (Exception ex)
                 {
-
+                    LogSystem.Log.Error(ex);
                 }
 
                 _elapseTimer.Stop();

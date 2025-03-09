@@ -1,4 +1,6 @@
-﻿namespace Common;
+﻿using System;
+
+namespace BlindServerCore.Threads;
 
 public class TimeJob : BaseJob
 {
