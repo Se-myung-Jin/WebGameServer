@@ -1,6 +1,6 @@
 ﻿global using MongoDB.Bson;
 global using MongoDB.Driver;
-global using DBContext = Common.DatabaseContextContainer;
+global using DBContext = BlindServerCore.Database.DatabaseContextContainer;
 
 namespace Common;
 

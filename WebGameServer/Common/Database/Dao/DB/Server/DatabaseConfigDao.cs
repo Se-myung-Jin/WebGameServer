@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.Database.Dao;
 
 [Table("Servers", "databaseConfig")]
 public class DatabaseConfigDao : BaseDao

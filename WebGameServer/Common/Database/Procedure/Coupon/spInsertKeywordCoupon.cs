@@ -1,8 +1,10 @@
-﻿namespace Common;
+﻿using Common.Content;
+
+namespace Common;
 
 public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao KeywordCouponCode) : BaseStoredProcedure
 {
-    public EResult Error { get; set; } = EResult.Success;
+    public Result Error { get; set; } = Result.Success;
 
     protected override bool Query()
     {
@@ -13,7 +15,7 @@ public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao Keywor
                 var serialCouponCodeCollection = GetCollection<SerialCouponCodeDao>();
                 if (serialCouponCodeCollection.Find(SerialCouponCodeDao.FilterDefinition(KeywordCouponCode.Keyword)).FirstOrDefault() != null)
                 {
-                    Error = EResult.Error_DuplicateName;
+                    Error = Result.Error_DuplicateName;
 
                     return true;
                 }
@@ -24,7 +26,7 @@ public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao Keywor
             Coupon._id = ObjectId.GenerateNewId();
             if (InsertKeywordCouponCode(Coupon._id) == false)
             {
-                Error = EResult.Error_DuplicateName;
+                Error = Result.Error_DuplicateName;
 
                 return true;
             }
@@ -35,7 +37,7 @@ public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao Keywor
         }
         catch (Exception ex)
         {
-            Error = EResult.Error_Internal;
+            Error = Result.Error_Internal;
 
             return false;
         }
@@ -50,7 +52,7 @@ public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao Keywor
                 var serialCouponCodeCollection = GetCollection<SerialCouponCodeDao>();
                 if (await (await serialCouponCodeCollection.FindAsync(SerialCouponCodeDao.FilterDefinition(KeywordCouponCode.Keyword))).FirstOrDefaultAsync() != null)
                 {
-                    Error = EResult.Error_DuplicateName;
+                    Error = Result.Error_DuplicateName;
 
                     return true;
                 }
@@ -61,7 +63,7 @@ public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao Keywor
             Coupon._id = ObjectId.GenerateNewId();
             if (await InsertKeywordCouponCodeAsync(Coupon._id) == false)
             {
-                Error = EResult.Error_DuplicateName;
+                Error = Result.Error_DuplicateName;
 
                 return true;
             }
@@ -72,7 +74,7 @@ public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao Keywor
         }
         catch (Exception ex)
         {
-            Error = EResult.Error_Internal;
+            Error = Result.Error_Internal;
 
             return false;
         }

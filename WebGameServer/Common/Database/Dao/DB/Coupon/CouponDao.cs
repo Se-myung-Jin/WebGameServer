@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.Database.Dao;
 
 [Table("Servers", "Coupon")]
 public class CouponDao : BaseDao

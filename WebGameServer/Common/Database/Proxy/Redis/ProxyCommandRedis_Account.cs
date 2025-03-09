@@ -10,7 +10,7 @@ public partial class ProxyCommandRedis
     {
         var redisData = new AccountRedisDao
         {
-            AuthType = (EAuthType)account.AccountType,
+            AuthType = (AuthType)account.AccountType,
             Token = token,
             SelectWorld = account.LastSelectWorld,
             LoginTime = DateTime.UtcNow.Ticks,
@@ -26,20 +26,20 @@ public partial class ProxyCommandRedis
         return redisData;
     }
 
-    public async Task<(EResult result, AccountRedisDao account)> ValidateKeyAccountAsync(AccessToken token)
+    public async Task<(Result result, AccountRedisDao account)> ValidateKeyAccountAsync(AccessToken token)
     {
         var account = await GetAccountAsync(token.UserId);
         if (account == null)
         {
-            return (EResult.Error_CacheAccountNotFound, null);
+            return (Result.Error_CacheAccountNotFound, null);
         }
         
         if (account.Token.Key != token.Key)
         {
-            return (EResult.Error_NotFoundAuthKey, null);
+            return (Result.Error_NotFoundAuthKey, null);
         }
 
-        return (EResult.Success, account);
+        return (Result.Success, account);
     }
 
     public async Task<AccountRedisDao> UpdateAccountSelectWorldAsync(long playerId, ushort selectWorld)
@@ -65,7 +65,7 @@ public partial class ProxyCommandRedis
         return new RedisStringParameter
         {
             Kind = GlobalValue.GLOBAL_REDIS,
-            Key = RedisKeyBuilder.CreateKey(ERedisKeyType.Auth, playerId),
+            Key = RedisKeyBuilder.CreateKey(RedisKeyType.Auth, playerId),
             Value = value,
             ExpireSecond = expireTimeSecond,
         };

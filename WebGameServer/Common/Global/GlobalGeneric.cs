@@ -1,4 +1,13 @@
-﻿global using Common;
+﻿global using BlindServerCore;
+global using BlindServerCore.Database;
+global using BlindServerCore.Utils;
+global using BlindServerCore.Web;
+global using BlindServerCore.Log;
+
+global using Common.Content;
+global using Common.Database;
+global using Common.Database.Procedure;
+global using Common.Database.Dao;
 
 global using System;
 global using System.IO;

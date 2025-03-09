@@ -1,4 +1,4 @@
-﻿using Common;
+﻿namespace Common.Database.Dao;
 
 [Table("Worlds", "player")]
 [TableIndex("UserId")]

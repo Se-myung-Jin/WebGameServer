@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Common;
+namespace Common.Content;
 
 public class ServiceStatusMonitor
 {

@@ -30,8 +30,8 @@ public class ConfigDatabase
 
     public DBConfig DbPoolConfig()
     {
-        Enum.TryParse<EDataBaseCategory>(Category, out var selectCategory);
-        Enum.TryParse<EReplicaType>(ReplicaType, out var selectReplica);
+        Enum.TryParse<DataBaseCategory>(Category, out var selectCategory);
+        Enum.TryParse<ReplicaType>(ReplicaType, out var selectReplica);
 
         return new DBConfig(Name, selectCategory, selectReplica, Server, 0);
     }
@@ -46,7 +46,7 @@ public class ConfigRedis
 
     public DBConfig DbPoolConfig()
     {
-        return new DBConfig(Name, EDataBaseCategory.REDIS, EReplicaType.MASTER, Server, DbId);
+        return new DBConfig(Name, DataBaseCategory.REDIS, ReplicaType.MASTER, Server, DbId);
     }
 }
 
@@ -59,7 +59,7 @@ public class ConfigLogDatabase
 
     public DBConfig DbPoolConfig()
     {
-        return new DBConfig(Name, EDataBaseCategory.MYSQL, EReplicaType.MASTER, Server, 0);
+        return new DBConfig(Name, DataBaseCategory.MYSQL, ReplicaType.MASTER, Server, 0);
     }
 }
 

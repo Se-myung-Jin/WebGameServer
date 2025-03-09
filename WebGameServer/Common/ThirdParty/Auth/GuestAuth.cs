@@ -14,7 +14,7 @@ public class GuestAuth : VerityAuth
             }
         }
 
-        var sp = new spSelectAccount(EAuthType.Guest, Id, Token);
+        var sp = new spSelectAccount(AuthType.Guest, Id, Token);
         if (await sp.StartPoolAync() && sp.OutResult != null) 
         {
             Account = sp.OutResult;
@@ -30,7 +30,7 @@ public class GuestAuth : VerityAuth
 
     private async Task<bool> CreateAsync()
     {
-        Account = CreateAccount(EAuthType.Guest, ObjectId.GenerateNewId().ToString(), Guid.NewGuid().ToString());
+        Account = CreateAccount(AuthType.Guest, ObjectId.GenerateNewId().ToString(), Guid.NewGuid().ToString());
         Id = Account.AuthId;
         Token = Account.Token;
 

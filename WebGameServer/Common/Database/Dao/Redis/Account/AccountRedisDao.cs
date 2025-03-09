@@ -1,11 +1,9 @@
-﻿using System.Diagnostics.Eventing.Reader;
-
-namespace Common;
+﻿namespace Common.Database.Dao;
 
 [MemoryPack.MemoryPackable]
 public partial class AccountRedisDao
 {
-    public EAuthType AuthType { get; set; }
+    public AuthType AuthType { get; set; }
     public long LoginTime { get; set; }
     public long LogOutTIme { get; set; }
     public ushort SelectWorld { get; set; }

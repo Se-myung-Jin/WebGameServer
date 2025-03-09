@@ -39,7 +39,7 @@ public abstract class VerityAuth
         return await Task.FromResult(true);
     }
 
-    public AccountDao CreateAccount(EAuthType type, string authId, string token)
+    public AccountDao CreateAccount(AuthType type, string authId, string token)
     {
         Created = true;
         var nowTime = DateTime.UtcNow;

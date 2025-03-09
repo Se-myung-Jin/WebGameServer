@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.Content;
 
 //TODO: SerialCouponCodeUtils에 합치는것 고려
 public struct SerialCouponCode

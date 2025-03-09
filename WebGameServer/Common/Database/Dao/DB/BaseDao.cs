@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.Database.Dao;
 
 public abstract class BaseDao
 {

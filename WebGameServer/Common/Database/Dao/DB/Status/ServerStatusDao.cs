@@ -1,9 +1,9 @@
-﻿namespace Common;
+﻿namespace Common.Database.Dao;
 
 [Table("Servers", "serverStatus")]
 public class ServerStatusDao : BaseDao
 {
-    public EServerType ServerType { get; set; }
+    public ServerType ServerType { get; set; }
     public string PublicAddress { get; set; }
     public string PrivateAddress { get; set; }
     public uint ServerId { get; set; }

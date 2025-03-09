@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.Database.Dao;
 
 [Table("Accounts", "account")]
 [TableIndex("AccountType", "AuthId")]

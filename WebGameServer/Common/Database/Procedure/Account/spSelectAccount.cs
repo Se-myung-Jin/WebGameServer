@@ -1,6 +1,6 @@
 ﻿namespace Common;
 
-public class spSelectAccount(EAuthType type, string authId, string token) : BaseStoredProcedure
+public class spSelectAccount(AuthType type, string authId, string token) : BaseStoredProcedure
 {
     public AccountDao OutResult { get; set; }
 
