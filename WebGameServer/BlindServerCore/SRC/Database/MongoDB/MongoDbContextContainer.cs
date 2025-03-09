@@ -1,15 +1,20 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using BlindServerCore.Utils;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
-namespace Common;
+namespace BlindServerCore.Database;
 
 public class TableAttribute : Attribute
 {
     public readonly string DbName;
     public readonly string TableName;
-    public readonly EMongoDbKind Kind;
+    public readonly MongoDbKind Kind;
     public readonly bool EnableShading;
 
-    public TableAttribute(string dbName, string tableName, EMongoDbKind dbKind = EMongoDbKind.Main, bool enableShading = false)
+    public TableAttribute(string dbName, string tableName, MongoDbKind dbKind = MongoDbKind.Main, bool enableShading = false)
     {
         DbName = dbName;
         TableName = tableName;
@@ -51,7 +56,7 @@ public class TableIndexAttribute : Attribute
 
 public class MongoDbContextContainer
 {
-    private Dictionary<EMongoDbKind, MongoClient> _connectionMap = new();
+    private Dictionary<MongoDbKind, MongoClient> _connectionMap = new();
     private Dictionary<Type, TableAttribute> _typeToNameMap = new();
 
     public void Initialize()
@@ -61,7 +66,7 @@ public class MongoDbContextContainer
 
     public MongoClient Add(DBConfig config)
     {
-        Enum.TryParse(config.Name, out EMongoDbKind typeName);
+        Enum.TryParse(config.Name, out MongoDbKind typeName);
         var client = new MongoClient(config.ConnectionString);
         
         _connectionMap.Add(typeName, client);
@@ -70,12 +75,12 @@ public class MongoDbContextContainer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MongoClient Client(EMongoDbKind name) => _connectionMap[name];
+    public MongoClient Client(MongoDbKind name) => _connectionMap[name];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IMongoDatabase Database(EMongoDbKind name, string dbName) => _connectionMap[name].GetDatabase(dbName);
+    public IMongoDatabase Database(MongoDbKind name, string dbName) => _connectionMap[name].GetDatabase(dbName);
 
-    public IMongoCollection<T> GetTable<T>(EMongoDbKind name, string dbName, string table) => _connectionMap[name].GetDatabase(dbName).GetCollection<T>(table);
+    public IMongoCollection<T> GetTable<T>(MongoDbKind name, string dbName, string table) => _connectionMap[name].GetDatabase(dbName).GetCollection<T>(table);
 
     public IMongoCollection<T> GetCollection<T>()
     {
@@ -84,12 +89,12 @@ public class MongoDbContextContainer
         return Client(find.dbKind).GetDatabase(find.dbName).GetCollection<T>(find.tableName);
     }
 
-    private (string dbName, string tableName, EMongoDbKind dbKind, bool enableShading) GetTypeToName<T>()
+    private (string dbName, string tableName, MongoDbKind dbKind, bool enableShading) GetTypeToName<T>()
     {
         return GetTypeToName(typeof(T));
     }
 
-    private (string dbName, string tableName, EMongoDbKind dbKind, bool enableShading) GetTypeToName(Type type)
+    private (string dbName, string tableName, MongoDbKind dbKind, bool enableShading) GetTypeToName(Type type)
     {
         if (_typeToNameMap.TryGetValue(type, out var tblAttribute) == false)
         {

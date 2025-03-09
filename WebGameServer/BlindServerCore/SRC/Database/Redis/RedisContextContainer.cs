@@ -1,7 +1,10 @@
 ﻿using StackExchange.Redis;
+using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
-namespace Common;
+namespace BlindServerCore.Database;
 
 public class RedisContextContainer
 {

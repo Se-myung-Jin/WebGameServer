@@ -1,6 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
-namespace Common;
+namespace BlindServerCore.Utils;
 
 public static partial class CommonCustomAttribute
 {

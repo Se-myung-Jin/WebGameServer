@@ -1,13 +1,10 @@
 ﻿using MySqlConnector;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace Common;
-
-public enum EMySqlKind
-{
-    Write = 1,
-    ReadOnly = 2,
-};
+namespace BlindServerCore.Database;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class LogTableAttribute : Attribute
@@ -54,7 +51,7 @@ public class LogTableAttribute : Attribute
 
 public class MySqlContextContainer
 {
-    private readonly Dictionary<EMySqlKind, MySqlConnection> m_connectionMap = new();
+    private readonly Dictionary<MySqlKind, MySqlConnection> m_connectionMap = new();
 
     public void Initialize()
     {
@@ -63,7 +60,7 @@ public class MySqlContextContainer
 
     public MySqlConnection Add(DBConfig config)
     {
-        Enum.TryParse(config.Name, out EMySqlKind typeName);
+        Enum.TryParse(config.Name, out MySqlKind typeName);
         
         var connection = new MySqlConnection(config.ConnectionString);
         m_connectionMap[typeName] = connection;
@@ -73,7 +70,7 @@ public class MySqlContextContainer
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 
-    public MySqlConnection GetConnection(EMySqlKind kind) => m_connectionMap[kind];
+    public MySqlConnection GetConnection(MySqlKind kind) => m_connectionMap[kind];
 
     public void Destroy()
     {

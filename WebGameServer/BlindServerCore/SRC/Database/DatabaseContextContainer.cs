@@ -1,16 +1,18 @@
 ﻿using MongoDB.Bson.Serialization.Conventions;
+using System;
+using System.Collections.Generic;
 
-namespace Common;
+namespace BlindServerCore.Database;
 
 public struct DBConfig
 {
-    public readonly EDataBaseCategory Category;
-    public readonly EReplicaType ReplicaType;
+    public readonly DataBaseCategory Category;
+    public readonly ReplicaType ReplicaType;
     public readonly string ConnectionString;
     public readonly int Id;
     public readonly string Name;
 
-    public DBConfig(string name, EDataBaseCategory category, EReplicaType replicaType, string config, int id) => (Name, Category, ReplicaType, ConnectionString, Id) = (name, category, replicaType, config, id);
+    public DBConfig(string name, DataBaseCategory category, ReplicaType replicaType, string config, int id) => (Name, Category, ReplicaType, ConnectionString, Id) = (name, category, replicaType, config, id);
 };
 
 public sealed class DatabaseContextContainer
@@ -30,13 +32,13 @@ public sealed class DatabaseContextContainer
     {
         switch (config.Category)
         {
-            case EDataBaseCategory.MONGO:
+            case DataBaseCategory.MONGO:
                 MongoDb.Add(config);
                 break;
-            case EDataBaseCategory.REDIS:
+            case DataBaseCategory.REDIS:
                 Redis.Add(config);
                 break;
-            case EDataBaseCategory.MYSQL:
+            case DataBaseCategory.MYSQL:
                 MySql.Add(config);
                 break;
         }

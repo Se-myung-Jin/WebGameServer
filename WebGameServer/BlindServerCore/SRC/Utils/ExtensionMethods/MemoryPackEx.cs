@@ -1,4 +1,7 @@
-﻿namespace Common;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+namespace BlindServerCore;
 
 public static partial class GlobalExtentionMethods
 {
@@ -72,9 +75,9 @@ public static partial class GlobalExtentionMethods
 
         try
         {
-            await using var stream = SystemGlobal.Instance.RecycleMemory.GetStream(data);
+            //await using var stream = SystemGlobal.Instance.RecycleMemory.GetStream(data);
 
-            return await MemoryPack.MemoryPackSerializer.DeserializeAsync<T>(stream);
+            //return await MemoryPack.MemoryPackSerializer.DeserializeAsync<T>(stream);
         }
         catch (Exception ex)
         {

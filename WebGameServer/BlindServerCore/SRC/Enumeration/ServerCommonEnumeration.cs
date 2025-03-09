@@ -34,6 +34,12 @@ public enum RedisKeyType
     Auth,
 };
 
+public enum MySqlKind
+{
+    Write = 1,
+    ReadOnly = 2,
+};
+
 public enum Publisher
 {
     UnDefine = 0,

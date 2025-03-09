@@ -1,4 +1,9 @@
-﻿namespace Common;
+﻿using StackExchange.Redis;
+using System;
+using System.Threading.Tasks;
+using DBContext = BlindServerCore.Database.DatabaseContextContainer;
+
+namespace BlindServerCore.Database;
 
 public partial class RedisCommand
 {

@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+	<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	<PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="MemoryPack" Version="1.21.4" />
 	<PackageReference Include="MemoryPack.Streaming" Version="1.21.4" />

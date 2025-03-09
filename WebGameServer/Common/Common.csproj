@@ -21,17 +21,16 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-	<PackageReference Include="Dapper" Version="2.1.66" />
-    <PackageReference Include="MemoryPack" Version="1.21.3" />
-    <PackageReference Include="MemoryPack.UnityShims" Version="1.21.3" />
-    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />	 
-    <PackageReference Include="MySqlConnector" Version="2.4.0" />
-    <PackageReference Include="Samboy063.Tomlet" Version="5.4.0" />
-    <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	<PackageReference Include="StackExchange.Redis" Version="2.8.16" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.0" />
+    <Compile Remove="NewFolder\**" />
+    <Compile Remove="Release_Linux\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <EmbeddedResource Remove="Release_Linux\**" />
+    <None Remove="NewFolder\**" />
+    <None Remove="Release_Linux\**" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	<ProjectReference Include="..\BlindServerCore\BlindServerCore.csproj" />
   </ItemGroup>
 
 </Project>

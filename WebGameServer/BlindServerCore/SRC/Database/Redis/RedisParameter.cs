@@ -1,6 +1,6 @@
 ﻿using StackExchange.Redis;
 
-namespace Common;
+namespace BlindServerCore.Database;
 
 public readonly struct RedisParameter
 {

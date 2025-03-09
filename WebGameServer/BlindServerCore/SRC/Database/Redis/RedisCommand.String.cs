@@ -1,6 +1,9 @@
 ﻿using StackExchange.Redis;
+using System;
+using System.Threading.Tasks;
+using DBContext = BlindServerCore.Database.DatabaseContextContainer;
 
-namespace Common;
+namespace BlindServerCore.Database;
 
 public partial class RedisCommand
 {
