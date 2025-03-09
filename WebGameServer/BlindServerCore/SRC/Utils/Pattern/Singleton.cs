@@ -1,4 +1,6 @@
-﻿namespace Common;
+﻿using System;
+
+namespace BlindServerCore.Utils;
 
 public abstract class Singleton<T> where T : new()
 {
