@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.Database.Procedure;
 
 public class spUpdateUseKeywordCoupon(string keyword, long issuedCount, UseCouponLogDao useCouponLog) : BaseStoredProcedure
 {

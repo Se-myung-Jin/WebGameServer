@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace BlindServerCore;
 
 [MemoryPack.MemoryPackable]
 public partial struct NetworkCodeCount

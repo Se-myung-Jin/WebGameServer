@@ -1,5 +1,4 @@
-﻿
-namespace Common;
+﻿namespace Common.Database.Procedure;
 
 public class spSelectAllCouponData : BaseStoredProcedure
 {

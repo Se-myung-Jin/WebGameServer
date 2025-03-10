@@ -1,6 +1,4 @@
-﻿using Common.Content;
-
-namespace Common;
+﻿namespace Common.Database.Procedure;
 
 public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao KeywordCouponCode) : BaseStoredProcedure
 {

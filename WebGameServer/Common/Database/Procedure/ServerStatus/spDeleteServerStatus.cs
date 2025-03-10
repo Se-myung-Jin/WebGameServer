@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.Database.Procedure;
 
 public class spDeleteServerStatus(ServerStatusDao data) : BaseStoredProcedure
 {

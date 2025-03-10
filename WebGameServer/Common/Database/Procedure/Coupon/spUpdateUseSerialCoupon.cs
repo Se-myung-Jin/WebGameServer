@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.Database.Procedure;
 
 public class spUpdateUseSerialCoupon(string serialCode, UseCouponLogDao useCouponLog) : BaseStoredProcedure
 {

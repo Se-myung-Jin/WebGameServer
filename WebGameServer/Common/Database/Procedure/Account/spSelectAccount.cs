@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Common.Database.Procedure;
 
 public class spSelectAccount(AuthType type, string authId, string token) : BaseStoredProcedure
 {
