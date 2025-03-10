@@ -28,6 +28,8 @@ public class spUpdateUseKeywordCoupon(string keyword, long issuedCount, UseCoupo
         }
         catch (Exception ex)
         {
+            LogSystem.Log.Error(ex);
+
             return false;
         }
     }
@@ -57,6 +59,8 @@ public class spUpdateUseKeywordCoupon(string keyword, long issuedCount, UseCoupo
         }
         catch (Exception ex)
         {
+            LogSystem.Log.Error(ex);
+
             return false;
         }
     }

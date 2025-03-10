@@ -24,7 +24,7 @@ public class spUpdateServerStatus(ServerStatusDao data) : BaseStoredProcedure
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return false;
@@ -50,7 +50,7 @@ public class spUpdateServerStatus(ServerStatusDao data) : BaseStoredProcedure
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
         return false;
     }

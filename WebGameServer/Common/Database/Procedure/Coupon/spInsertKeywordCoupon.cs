@@ -36,6 +36,7 @@ public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao Keywor
         catch (Exception ex)
         {
             Error = Result.Error_Internal;
+            LogSystem.Log.Error(ex);
 
             return false;
         }
@@ -73,6 +74,7 @@ public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao Keywor
         catch (Exception ex)
         {
             Error = Result.Error_Internal;
+            LogSystem.Log.Error(ex);
 
             return false;
         }
@@ -93,6 +95,8 @@ public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao Keywor
         {
             if (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
             {
+                LogSystem.Log.Error(ex);
+
                 return false;
             }
         }
@@ -115,6 +119,8 @@ public class spInsertKeywordCoupon(CouponDao Coupon, KeywordCouponCodeDao Keywor
         {
             if (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
             {
+                LogSystem.Log.Error(ex);
+
                 return false;
             }
         }

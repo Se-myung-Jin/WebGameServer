@@ -7,16 +7,16 @@ public partial class RestApiRouter
     {
         var pkt = protocol as PKT_WEB_CS_COUPON;
         var response = new PKT_WEB_SC_COUPON();
-        response.Result = EResult.Success;
+        response.Result = Result.Success;
 
         if (pkt.Validate() == false)
         {
-            response.Result = EResult.Error_InvalidParameter;
+            response.Result = Result.Error_InvalidParameter;
             return response;
         }
 
         var validateResult = await ProxyCommand.Instance.Redis.ValidateKeyAccountAsync(pkt.Token);
-        if (validateResult.result != EResult.Success)
+        if (validateResult.result != Result.Success)
         {
             response.Result = validateResult.result;
             return response;

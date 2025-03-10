@@ -8,7 +8,7 @@ public class Global : ServiceCommon
 
         await InitializeConfigAsync(configName);
 
-        ServiceStatusMonitor.Initialize(new ServerStatusDao { ServerType = EServerType.Maintenance, PublicAddress = ServiceConfig.PublicAddress, PrivateAddress = ServiceConfig.PrivateAddress, CommitHash = GetCommitHash() });
+        ServiceStatusMonitor.Initialize(new ServerStatusDao { ServerType = ServerType.Maintenance, PublicAddress = ServiceConfig.PublicAddress, PrivateAddress = ServiceConfig.PrivateAddress, CommitHash = GetCommitHash() });
         ServiceStatusMonitor.SetEnable(true);
 
         SystemGlobal.Instance.StartScheduler();

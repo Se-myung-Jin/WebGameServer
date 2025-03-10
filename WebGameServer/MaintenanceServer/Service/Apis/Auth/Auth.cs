@@ -11,18 +11,18 @@ public partial class RestApiRouter
         var response = new PKT_WEB_SC_AUTH
         {
             Block = null,
-            Result = EResult.Error_Unknown,
+            Result = Result.Error_Unknown,
         };
 
         if (pkt.Validate() == false)
         {
-            response.Result = EResult.Error_InvalidParameter;
+            response.Result = Result.Error_InvalidParameter;
             return response;
         }
 
-        var auth = pkt.Type switch
+        var auth = pkt.AuthType switch
         {
-            EAuthType.Guest => new GuestAuth(),
+            AuthType.Guest => new GuestAuth(),
             //eAuthType.Google => new GoogleAuth(),
             //eAuthType.Apple => new AppleAuth(),
             //eAuthType.FaceBook => new FacebookAuth(),
@@ -34,12 +34,12 @@ public partial class RestApiRouter
         auth.initialize(pkt.AuthId, pkt.AuthToken);
         if (await auth.VerityAsync() == false)
         {
-            response.Result = EResult.Error_InvalidIdOrPass;
+            response.Result = Result.Error_InvalidIdOrPass;
             return response;
         }
 
         //todo: 로그 기록 및 처리
-        response.Result = EResult.Success;
+        response.Result = Result.Success;
         response.IsCreate = auth.Created;
 
         if (response.IsCreate)

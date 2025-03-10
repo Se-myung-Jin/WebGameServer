@@ -29,7 +29,7 @@ public partial class RestApiRouter : Singleton<RestApiRouter>
             }
             catch (Exception ex)
             {
-
+                LogSystem.Log.Error(ex);
             }
         }
     }
@@ -56,11 +56,11 @@ public partial class RestApiRouter : Singleton<RestApiRouter>
         }
         catch (Exception ex)
         {
-            //responseObject = new PKT_WEB_SC_INTERNALERROR() { Message = ex.Message };
+            responseObject = new PKT_WEB_SC_INTERNALERROR() { Message = ex.Message };
         }
         finally
         {
-            //responseObject = responseObject ?? new PKT_WEB_SC_INTERNALERROR() { Message = "CODE-19" };
+            responseObject = responseObject ?? new PKT_WEB_SC_INTERNALERROR() { Message = "CODE-19" };
 
             await m_parser.WriteAsync(context, responseObject);
         }

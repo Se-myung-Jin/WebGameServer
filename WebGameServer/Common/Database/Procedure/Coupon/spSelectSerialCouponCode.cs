@@ -15,6 +15,8 @@ public class spSelectSerialCouponCode(string serialCode) : BaseStoredProcedure
         }
         catch (Exception ex) 
         {
+            LogSystem.Log.Error(ex);
+
             return false;
         }
     }
@@ -30,6 +32,8 @@ public class spSelectSerialCouponCode(string serialCode) : BaseStoredProcedure
         }
         catch (Exception ex)
         {
+            LogSystem.Log.Error(ex);
+
             return false;
         }
     }

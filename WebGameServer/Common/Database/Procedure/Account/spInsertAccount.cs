@@ -13,7 +13,7 @@ public class spInsertAccount(AccountDao data) : BaseStoredProcedure
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return false;
@@ -31,7 +31,7 @@ public class spInsertAccount(AccountDao data) : BaseStoredProcedure
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return false;

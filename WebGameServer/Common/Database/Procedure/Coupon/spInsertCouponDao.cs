@@ -13,6 +13,8 @@ public class spInsertCouponDao(CouponDao Coupon) : BaseStoredProcedure
         }
         catch (Exception ex)
         {
+            LogSystem.Log.Error(ex);
+
             return false;
         }
     }
@@ -28,6 +30,8 @@ public class spInsertCouponDao(CouponDao Coupon) : BaseStoredProcedure
         }
         catch (Exception ex)
         {
+            LogSystem.Log.Error(ex);
+
             return false;
         }
     }

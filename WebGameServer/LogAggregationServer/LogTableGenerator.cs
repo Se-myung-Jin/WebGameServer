@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using System.Reflection;
-using DBContext = Common.DatabaseContextContainer;
+using DBContext = BlindServerCore.Database.DatabaseContextContainer;
 
 namespace LogAggregationServer;
 
@@ -14,7 +14,7 @@ public class LogTableGenerator
         
         if (!string.IsNullOrEmpty(query))
         {
-            using (var conn = DBContext.Instance.MySql.GetConnection(EMySqlKind.Write))
+            using (var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write))
             {
                 await conn.ExecuteAsync(query);
             }

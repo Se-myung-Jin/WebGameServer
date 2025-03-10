@@ -15,7 +15,7 @@ public class spDeleteServerStatus(ServerStatusDao data) : BaseStoredProcedure
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return false;
@@ -34,7 +34,7 @@ public class spDeleteServerStatus(ServerStatusDao data) : BaseStoredProcedure
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
         return false;
     }

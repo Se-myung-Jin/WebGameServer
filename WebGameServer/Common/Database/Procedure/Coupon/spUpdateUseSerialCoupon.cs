@@ -24,6 +24,8 @@ public class spUpdateUseSerialCoupon(string serialCode, UseCouponLogDao useCoupo
         }
         catch (Exception ex)
         {
+            LogSystem.Log.Error(ex);
+
             return false;
         }
     }
@@ -50,6 +52,8 @@ public class spUpdateUseSerialCoupon(string serialCode, UseCouponLogDao useCoupo
         }
         catch (Exception ex)
         {
+            LogSystem.Log.Error(ex);
+
             return false;
         }
     }

@@ -77,11 +77,11 @@ namespace MaintenanceServer
 
 
         //TODO: 메일 보상을 받을 Character OwnerKey 필요
-        public async Task<EResult> UseCoupon(string couponCode, long playerId)
+        public async Task<Result> UseCoupon(string couponCode, long playerId)
         {
             if (ValidCouponString(couponCode) == false)
             {
-                return EResult.Error_InvalidParameter;
+                return Result.Error_InvalidParameter;
             }
 
             CouponDao coupon = null;
@@ -93,7 +93,7 @@ namespace MaintenanceServer
                 var keywordCouponCodeSelectProc = new spSelectKeywordCouponCode(couponCode);
                 if (await keywordCouponCodeSelectProc.StartPoolAync() == false)
                 {
-                    return EResult.Error_Internal;
+                    return Result.Error_Internal;
                 }
 
                 keywordCouponCode = keywordCouponCodeSelectProc.KeywordCouponCode;
@@ -101,7 +101,7 @@ namespace MaintenanceServer
                 {
                     if (keywordCouponCode.RemainCount <= 0)
                     {
-                        return EResult.Error_TableNotFound;
+                        return Result.Error_TableNotFound;
                     }
 
                     coupon = GetCoupon(keywordCouponCode.CouponId);
@@ -112,7 +112,7 @@ namespace MaintenanceServer
                 var serialCouponCodeSelectProc = new spSelectSerialCouponCode(couponCode);
                 if (await serialCouponCodeSelectProc.StartPoolAync() == false)
                 {
-                    return EResult.Error_Internal;
+                    return Result.Error_Internal;
                 }
 
                 serialCouponCode = serialCouponCodeSelectProc.SerialCouponCode;
@@ -121,7 +121,7 @@ namespace MaintenanceServer
                     if (serialCouponCode.IsUsed)
                     {
                         //TODO: ErrorCode 추가 이미 사용된 쿠폰
-                        return EResult.Error_TableNotFound;
+                        return Result.Error_TableNotFound;
                     }
 
                     if (serialCouponCode.PlayerId == 0 || serialCouponCode.PlayerId == playerId)
@@ -138,24 +138,24 @@ namespace MaintenanceServer
             if (coupon == null)
             {
                 //TODO: ErrorCode 추가
-                return EResult.Error_TableNotFound;
+                return Result.Error_TableNotFound;
             }
 
             if (coupon.ExpireTime < DateTime.UtcNow)
             {
                 //TODO: ErrorCode 추가 만료 쿠폰
-                return EResult.Error_ExpireSlot;
+                return Result.Error_NotEnoughItemCount;
             }
 
             var logSelectProc = new spCountUseCouponLog(playerId, coupon._id);
             if (await logSelectProc.StartPoolAync() == false)
             {
-                return EResult.Error_Internal;
+                return Result.Error_Internal;
             }
             else if (logSelectProc.UseCount >= coupon.UseCountPerUser)
             {
                 //TODO: ErrorCode 추가 사용 횟수 초과
-                return EResult.Error_TableNotFound;
+                return Result.Error_TableNotFound;
             }
 
             UseCouponLogDao logDao = new();
@@ -173,7 +173,7 @@ namespace MaintenanceServer
                 {
                     //TODO: 해당 프로시져는 다르게 처리해야하는가?
                     //bool값이 아닌 result를 반환?
-                    return EResult.Error_Internal;
+                    return Result.Error_Internal;
                 }
             }
             else
@@ -183,11 +183,11 @@ namespace MaintenanceServer
                 if (await updateProc.StartPoolAync() == false)
                 {
                     //TODO: 해당 프로시져는 다르게 처리해야하는가?
-                    return EResult.Error_Internal;
+                    return Result.Error_Internal;
                 }
             }
 
-            return EResult.Success;
+            return Result.Success;
         }
 
         public async Task IssueSerialCouponAsync(CouponDao coupon, List<long> playerIdList = null)
@@ -265,7 +265,7 @@ namespace MaintenanceServer
             keywordCouponCode.RemainCount = coupon.IssuedCount;
 
             var proc = new spInsertKeywordCoupon(coupon, keywordCouponCode);
-            if (await proc.StartPoolAync() == false || proc.Error != EResult.Success)
+            if (await proc.StartPoolAync() == false || proc.Error != Result.Success)
             {
 
             }

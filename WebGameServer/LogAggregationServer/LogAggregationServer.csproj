@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+	<ProjectReference Include="..\BlindServerCore\BlindServerCore.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
 	<Compile Include="..\Common\Global\GlobalGeneric.cs" />
   </ItemGroup>

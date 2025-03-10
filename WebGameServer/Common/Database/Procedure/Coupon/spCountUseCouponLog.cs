@@ -15,6 +15,8 @@ public class spCountUseCouponLog(long PlayerId, ObjectId CouponId) : BaseStoredP
         }
         catch (Exception ex)
         {
+            LogSystem.Log.Error(ex);
+
             return false;
         }
     }
@@ -30,6 +32,8 @@ public class spCountUseCouponLog(long PlayerId, ObjectId CouponId) : BaseStoredP
         }
         catch (Exception ex)
         {
+            LogSystem.Log.Error(ex);
+
             return false;
         }
     }

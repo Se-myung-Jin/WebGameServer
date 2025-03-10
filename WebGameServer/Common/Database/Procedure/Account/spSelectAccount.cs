@@ -19,7 +19,7 @@ public class spSelectAccount(AuthType type, string authId, string token) : BaseS
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return false;
@@ -41,7 +41,7 @@ public class spSelectAccount(AuthType type, string authId, string token) : BaseS
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return false;

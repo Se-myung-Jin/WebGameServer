@@ -1,4 +1,6 @@
-﻿namespace LogAggregationServer;
+﻿using BlindServerCore.Threads;
+
+namespace LogAggregationServer;
 
 public class LogAggregationProcessStarter : ProcessStarter
 {

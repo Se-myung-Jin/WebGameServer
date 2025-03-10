@@ -1,4 +1,6 @@
-﻿namespace GameServer;
+﻿using BlindServerCore.Threads;
+
+namespace GameServer;
 
 public class GameProcessStarter : ProcessStarter
 {
