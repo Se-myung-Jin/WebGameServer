@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 namespace BlindServerCore;
 
-public static partial class GlobalExtentionMethods
+public static partial class GlobalExtensionMethods
 {
     public static byte[] WriteMemoryPack<T>(this T data)
     {

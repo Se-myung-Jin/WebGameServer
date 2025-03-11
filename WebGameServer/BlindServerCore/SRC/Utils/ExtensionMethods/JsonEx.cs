@@ -4,7 +4,7 @@ using BlindServerCore.Log;
 
 namespace BlindServerCore;
 
-public static partial class GlobalExtentionMethods
+public static partial class GlobalExtensionMethods
 {
     public static bool FileWriteJson<T>(string path, T data, out string error)
     {
