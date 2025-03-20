@@ -18,7 +18,7 @@ public partial class RedisCommand
                 return true;
             }
 
-            return db.StreamCreateConsumerGroup(param.Key, param.Member);
+            return db.StreamCreateConsumerGroup(param.Key, param.Value);
         }
         catch (Exception ex)
         {
@@ -38,7 +38,7 @@ public partial class RedisCommand
                 for (int i = 0; i < groupArray.Length; ++i)
                 {
                     var group = groupArray[i];
-                    if (group.Name.Equals(param.Member))
+                    if (group.Name.Equals(param.Value))
                     {
                         return true;
                     }
@@ -65,7 +65,7 @@ public partial class RedisCommand
         var db = DBContext.Instance.Redis.GetDb(param.Kind);
         try
         {
-            return await db.StreamCreateConsumerGroupAsync(param.Key, param.Member);
+            return await db.StreamCreateConsumerGroupAsync(param.Key, param.Value);
         }
         catch (Exception ex)
         {
@@ -195,5 +195,23 @@ public partial class RedisCommand
         }
 
         return default;
+    }
+
+    public static void LogToRedisStream(RedisParameter param, string table, byte[] byteArray)
+    {
+        var db = DBContext.Instance.Redis.GetDb(param.Kind);
+
+        db.StreamAdd(param.Key, new NameValueEntry[]
+        {
+            new("tableName", table),
+            new("data", byteArray),
+        });
+    }
+
+    public static async Task ConsumeAsync(RedisParameter param, RedisValue entryId)
+    {
+        var db = DBContext.Instance.Redis.GetDb(param.Kind);
+
+        await db.StreamAcknowledgeAsync(param.Key, param.Value, entryId);
     }
 }

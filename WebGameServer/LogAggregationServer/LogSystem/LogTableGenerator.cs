@@ -6,18 +6,17 @@ namespace LogAggregationServer;
 
 public class LogTableGenerator
 {
-    public static HashSet<string> LogTableHash { get; private set; } = new HashSet<string>();
+    public static readonly Dictionary<string, Type> LogTypeMapping = new Dictionary<string, Type>();
 
     public static async Task UpdateLogTableAsync()
     {
         var query = CreateLogTableQuery();
-        
+
         if (!string.IsNullOrEmpty(query))
         {
-            using (var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write))
-            {
-                await conn.ExecuteAsync(query);
-            }
+            var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write);
+
+            await conn.ExecuteAsync(query);
         }
     }
 
@@ -34,18 +33,18 @@ public class LogTableGenerator
             string tableName = GetLogTableName(attribute);
             string nextMonthTableName = GetNextMonthLogTableName(attribute);
 
-            if (!LogTableHash.Contains(tableName))
+            if (!LogTypeMapping.ContainsKey(tableName))
             {
                 string createTableQuery = GenerateLogTableQuery(type, attribute, tableName);
                 stringBuilder.Append(createTableQuery);
-                LogTableHash.Add(tableName);
+                LogTypeMapping[tableName] = type;
             }
 
-            if (!string.IsNullOrEmpty(nextMonthTableName) && !LogTableHash.Contains(nextMonthTableName))
+            if (!string.IsNullOrEmpty(nextMonthTableName) && !LogTypeMapping.ContainsKey(nextMonthTableName))
             {
                 string nextMonthTableQuery = GenerateLogTableQuery(type, attribute, nextMonthTableName);
                 stringBuilder.Append(nextMonthTableQuery);
-                LogTableHash.Add(nextMonthTableName);
+                LogTypeMapping[nextMonthTableName] = type;
             }
         }
 
@@ -54,12 +53,12 @@ public class LogTableGenerator
 
     private static string GetLogTableName(LogTableAttribute attribute)
     {
-        return attribute.UseMonthlyPartition ? $"{attribute.TableName}_{DateTime.UtcNow:yyyyMM}" : attribute.TableName;
+        return attribute.UseMonthlyPartition ? $"{attribute.TableName}_{TimeUtils.GetTime():yyyyMM}" : attribute.TableName;
     }
 
     private static string GetNextMonthLogTableName(LogTableAttribute attribute)
     {
-        return attribute.UseMonthlyPartition ? $"{attribute.TableName}_{DateTime.UtcNow.AddMonths(1):yyyyMM}" : string.Empty;
+        return attribute.UseMonthlyPartition ? $"{attribute.TableName}_{TimeUtils.GetTime().AddMonths(1):yyyyMM}" : string.Empty;
     }
 
     private static string GenerateLogTableQuery(Type type, LogTableAttribute attribute, string tableName)
