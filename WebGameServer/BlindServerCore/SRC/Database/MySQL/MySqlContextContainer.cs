@@ -51,7 +51,7 @@ public class LogTableAttribute : Attribute
 
 public class MySqlContextContainer
 {
-    private readonly Dictionary<MySqlKind, MySqlConnection> m_connectionMap = new();
+    private readonly Dictionary<MySqlKind, MySqlConnection> _connectionMap = new();
 
     public void Initialize()
     {
@@ -63,22 +63,27 @@ public class MySqlContextContainer
         Enum.TryParse(config.Name, out MySqlKind typeName);
         
         var connection = new MySqlConnection(config.ConnectionString);
-        m_connectionMap[typeName] = connection;
+        _connectionMap[typeName] = connection;
 
         return connection;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 
-    public MySqlConnection GetConnection(MySqlKind kind) => m_connectionMap[kind];
+    public MySqlConnection GetConnection(MySqlKind kind)
+    {
+        var conn = _connectionMap[kind];
+
+        return new MySqlConnection(conn.ConnectionString);
+    }
 
     public void Destroy()
     {
-        foreach (var connection in m_connectionMap.Values)
+        foreach (var connection in _connectionMap.Values)
         {
             connection.Dispose();
         }
 
-        m_connectionMap.Clear();
+        _connectionMap.Clear();
     }
 }

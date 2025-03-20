@@ -6,7 +6,7 @@ public class LogAggregationProcessStarter : ProcessStarter
 {
     protected override async Task InitializeOthersAsync(ServiceConfig config)
     {
-        RedisParameter param = new RedisParameter() { Key = "log_stream", Value = "log_group", Member = "consumer1", DataCount = 1000, Kind = GlobalValue.GLOBAL_REDIS };
+        RedisParameter param = new RedisParameter() { Key = "log_stream", Value = "log_group", Member = "consumer1", DataCount = 2500, Kind = GlobalValue.GLOBAL_REDIS };
         LogRedisStreamManager redis = new LogRedisStreamManager(param);
         redis.CreateLogRedisStreamGroup();
 

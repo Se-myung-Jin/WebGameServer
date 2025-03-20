@@ -7,8 +7,8 @@ namespace LogAggregationServer;
 public class LogRedisStreamManager
 {
     RedisParameter _parameter;
-    private readonly ConcurrentQueue<LogBase> _logQueue = new();
-
+    private readonly ConcurrentDictionary<string, List<LogBase>> _logBatches = new();
+    private readonly object _lock = new();
 
     public LogRedisStreamManager(RedisParameter parameter)
     {
@@ -30,59 +30,64 @@ public class LogRedisStreamManager
     public async Task ConsumeLogsAsync()
     {
         var entries = await RedisCommand.StreamGroupReadAsync(_parameter);
+        if (entries.Length == 0) return;
 
-        foreach (var entry in entries)
+        await Parallel.ForEachAsync(entries, new ParallelOptions { MaxDegreeOfParallelism = 4 }, async (entry, token) =>
         {
-            string tableName = entry.Values.First(v => v.Name == "tableName").Value.ToString();
-            byte[] logDataBytes = (byte[])entry.Values.First(v => v.Name == "data").Value;
-
-            if (!LogTableGenerator.LogTypeMapping.TryGetValue(tableName, out Type logClassType))
+            try
             {
-                LogSystem.Log.Error($"Unknown log type: {tableName}");
-                continue;
-            }
+                string tableName = entry.Values.First(v => v.Name == "tableName").Value.ToString();
+                byte[] logDataBytes = (byte[])entry.Values.First(v => v.Name == "data").Value;
 
-            var logData = MemoryPackSerializer.Deserialize(logClassType, logDataBytes) as LogBase;
-            if (logData == null)
-            {
-                LogSystem.Log.Error($"Failed to cast {logClassType.Name} to LogBase");
-                continue;
-            }
-
-            _logQueue.Enqueue(logData);
-
-            await RedisCommand.ConsumeAsync(_parameter, entry.Id);
-        }
-
-        StartProcessingQueue();
-    }
-
-    private void StartProcessingQueue()
-    {
-        Task.Run(async () =>
-        {
-            var batchSize = 1000;
-            var groupedLogs = new Dictionary<string, List<LogBase>>();
-
-            while (_logQueue.TryDequeue(out var log))
-            {
-                string tableName = log.GetTableName();
-                if (!groupedLogs.ContainsKey(tableName))
+                if (!LogTableGenerator.LogTypeMapping.TryGetValue(tableName, out Type logClassType))
                 {
-                    groupedLogs[tableName] = new List<LogBase>();
+                    LogSystem.Log.Error($"Unknown log type: {tableName}");
+                    return;
                 }
-                groupedLogs[tableName].Add(log);
-            }
 
-            foreach (var (tableName, logs) in groupedLogs)
-            {
-                for (int i = 0; i < logs.Count; i += batchSize)
+                var logData = MemoryPackSerializer.Deserialize(logClassType, logDataBytes) as LogBase;
+                if (logData == null)
                 {
-                    var batch = logs.Skip(i).Take(batchSize).ToList();
-                    await InsertLogIntoMySQL(tableName, batch);
+                    LogSystem.Log.Error($"Failed to cast {logClassType.Name} to LogBase");
+                    return;
                 }
+
+                lock (_lock)
+                {
+                    if (!_logBatches.ContainsKey(tableName))
+                    {
+                        _logBatches[tableName] = new List<LogBase>();
+                    }
+                    _logBatches[tableName].Add(logData);
+                }
+
+                if (_logBatches[tableName].Count >= 2500)
+                {
+                    List<LogBase> batchToInsert;
+                    lock (_lock)
+                    {
+                        batchToInsert = new List<LogBase>(_logBatches[tableName]);
+                        _logBatches[tableName].Clear();
+                    }
+
+                    await InsertLogIntoMySQL(tableName, batchToInsert);
+                }
+
+                await RedisCommand.ConsumeAsync(_parameter, entry.Id);
+            }
+            catch (Exception ex)
+            {
+                LogSystem.Log.Error($"Error processing log: {ex}");
             }
         });
+
+        foreach (var logDatasEachTable in _logBatches)
+        {
+            if (logDatasEachTable.Value.Count > 0)
+            {
+                await InsertLogIntoMySQL(logDatasEachTable.Key, logDatasEachTable.Value);
+            }
+        }
     }
 
     private async Task InsertLogIntoMySQL(string tableName, List<LogBase> logEntries)
@@ -94,9 +99,10 @@ public class LogRedisStreamManager
 
         var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write);
 
-        string sql = GenerateBulkInsertQuery(logEntries, tableName);
+        var logEntriesCopy = new List<LogBase>(logEntries);
+        string sql = GenerateBulkInsertQuery(logEntriesCopy, tableName);
 
-        await conn.ExecuteAsync(sql, logEntries);
+        await conn.ExecuteAsync(sql, logEntriesCopy);
     }
 
     private string GenerateBulkInsertQuery(List<LogBase> logEntries, string tableName)
