@@ -61,19 +61,24 @@ public class LogRedisStreamManager
     {
         Task.Run(async () =>
         {
-            while (_logQueue.Count > 0)
+            var batchSize = 1000;
+            var groupedLogs = new Dictionary<string, List<LogBase>>();
+
+            while (_logQueue.TryDequeue(out var log))
             {
-                var batchSize = 1000;
-                var batch = new List<LogBase>();
-
-                while (batch.Count < batchSize && _logQueue.TryDequeue(out var log))
+                string tableName = log.GetTableName();
+                if (!groupedLogs.ContainsKey(tableName))
                 {
-                    batch.Add(log);
+                    groupedLogs[tableName] = new List<LogBase>();
                 }
+                groupedLogs[tableName].Add(log);
+            }
 
-                if (batch.Count > 0)
+            foreach (var (tableName, logs) in groupedLogs)
+            {
+                for (int i = 0; i < logs.Count; i += batchSize)
                 {
-                    string tableName = batch[0].GetTableName();
+                    var batch = logs.Skip(i).Take(batchSize).ToList();
                     await InsertLogIntoMySQL(tableName, batch);
                 }
             }
