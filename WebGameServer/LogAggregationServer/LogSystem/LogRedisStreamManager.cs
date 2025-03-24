@@ -97,12 +97,13 @@ public class LogRedisStreamManager
             return;
         }
 
-        var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write);
+        using (var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write))
+        {
+            var logEntriesCopy = new List<LogBase>(logEntries);
+            string sql = GenerateBulkInsertQuery(logEntriesCopy, tableName);
 
-        var logEntriesCopy = new List<LogBase>(logEntries);
-        string sql = GenerateBulkInsertQuery(logEntriesCopy, tableName);
-
-        await conn.ExecuteAsync(sql, logEntriesCopy);
+            await conn.ExecuteAsync(sql, logEntriesCopy);
+        }
     }
 
     private string GenerateBulkInsertQuery(List<LogBase> logEntries, string tableName)
