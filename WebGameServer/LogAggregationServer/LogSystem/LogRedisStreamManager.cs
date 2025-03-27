@@ -99,21 +99,33 @@ public class LogRedisStreamManager
 
         using (var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write))
         {
-            var logEntriesCopy = new List<LogBase>(logEntries);
-            string sql = GenerateBulkInsertQuery(logEntriesCopy, tableName);
+            var sqlBuilder = new StringBuilder();
+            sqlBuilder.Append($"INSERT INTO {tableName} ");
 
-            await conn.ExecuteAsync(sql, logEntriesCopy);
+            var firstEntry = logEntries.First();
+            var properties = firstEntry.GetType().GetProperties();
+            string columns = string.Join(", ", properties.Select(p => p.Name));
+
+            sqlBuilder.Append($"({columns}) VALUES ");
+
+            var valueList = new List<string>();
+            var parameters = new DynamicParameters();
+
+            for (int i = 0; i < logEntries.Count; i++)
+            {
+                var values = new List<string>();
+                foreach (var prop in properties)
+                {
+                    string paramName = $"@{prop.Name}{i}";
+                    values.Add(paramName);
+                    parameters.Add(paramName, prop.GetValue(logEntries[i]));
+                }
+                valueList.Add($"({string.Join(", ", values)})");
+            }
+
+            sqlBuilder.Append(string.Join(", ", valueList));
+
+            await conn.ExecuteAsync(sqlBuilder.ToString(), parameters);
         }
-    }
-
-    private string GenerateBulkInsertQuery(List<LogBase> logEntries, string tableName)
-    {
-        var firstEntry = logEntries.First();
-        var properties = firstEntry.GetType().GetProperties();
-
-        string columns = string.Join(", ", properties.Select(p => p.Name));
-        string values = string.Join(", ", properties.Select(p => $"@{p.Name}"));
-
-        return $"INSERT INTO {tableName} ({columns}) VALUES ({values})";
     }
 }
