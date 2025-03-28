@@ -30,7 +30,7 @@ public class LogRedisStreamManager
     public async Task ConsumeLogsAsync()
     {
         var entries = await RedisCommand.StreamGroupReadAsync(_parameter);
-        if (entries.Length == 0) return;
+        if (entries == null) return;
 
         await Parallel.ForEachAsync(entries, new ParallelOptions { MaxDegreeOfParallelism = 4 }, async (entry, token) =>
         {
