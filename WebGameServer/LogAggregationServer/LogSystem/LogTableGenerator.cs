@@ -14,7 +14,7 @@ public class LogTableGenerator
 
         if (!string.IsNullOrEmpty(query))
         {
-            var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write);
+            using var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write);
 
             await conn.ExecuteAsync(query);
         }

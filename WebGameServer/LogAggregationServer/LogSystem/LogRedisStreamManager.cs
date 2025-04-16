@@ -1,18 +1,51 @@
 ﻿using Dapper;
 using MemoryPack;
+using System.Reflection;
 using DBContext = BlindServerCore.Database.DatabaseContextContainer;
 
 namespace LogAggregationServer;
 
 public class LogRedisStreamManager
 {
+    private class TableFlushStatus
+    {
+        public ConcurrentQueue<LogBase> Queue { get; } = new();
+        public DateTime LastFlushedAt { get; set; } = DateTime.UtcNow;
+        public int QueueLength => Queue.Count;
+    }
+
     RedisParameter _parameter;
-    private readonly ConcurrentDictionary<string, List<LogBase>> _logBatches = new();
-    private readonly object _lock = new();
+    private readonly ConcurrentDictionary<string, TableFlushStatus> _tableStatusMap = new();
+    private readonly ConcurrentDictionary<string, (string columns, PropertyInfo[] props)> _insertCache = new();
+    private CancellationTokenSource _cts;
 
     public LogRedisStreamManager(RedisParameter parameter)
     {
         this._parameter = parameter;
+        _cts = new CancellationTokenSource();
+        StartFlushTimer(_cts.Token);
+    }
+
+    public void Dispose()
+    {
+        _cts?.Cancel();
+    }
+
+    public void TestLogInsert()
+    {
+        var now = TimeUtils.GetTime();
+        for (int i = 0; i < 10000; i++)
+        {
+            var log = new LogItemGetDao()
+            {
+                UserId = 1111,
+                ItemId = 2222,
+                Quantity = 3,
+                ObtainedAt = now
+            };
+
+            LogToRedisStream(log);
+        }
     }
 
     public void CreateLogRedisStreamGroup()
@@ -52,26 +85,8 @@ public class LogRedisStreamManager
                     return;
                 }
 
-                lock (_lock)
-                {
-                    if (!_logBatches.ContainsKey(tableName))
-                    {
-                        _logBatches[tableName] = new List<LogBase>();
-                    }
-                    _logBatches[tableName].Add(logData);
-                }
-
-                if (_logBatches[tableName].Count >= 2500)
-                {
-                    List<LogBase> batchToInsert;
-                    lock (_lock)
-                    {
-                        batchToInsert = new List<LogBase>(_logBatches[tableName]);
-                        _logBatches[tableName].Clear();
-                    }
-
-                    await InsertLogIntoMySQL(tableName, batchToInsert);
-                }
+                var status = _tableStatusMap.GetOrAdd(tableName, _ => new TableFlushStatus());
+                status.Queue.Enqueue(logData);
 
                 await RedisCommand.ConsumeAsync(_parameter, entry.Id);
             }
@@ -80,12 +95,68 @@ public class LogRedisStreamManager
                 LogSystem.Log.Error($"Error processing log: {ex}");
             }
         });
+    }
 
-        foreach (var logDatasEachTable in _logBatches)
+    private void StartFlushTimer(CancellationToken token)
+    {
+        Task.Run(async () =>
         {
-            if (logDatasEachTable.Value.Count > 0)
+            while (!token.IsCancellationRequested)
             {
-                await InsertLogIntoMySQL(logDatasEachTable.Key, logDatasEachTable.Value);
+                await FlushAll();
+                await Task.Delay(TimeSpan.FromSeconds(1), token);
+            }
+        }, token);
+    }
+
+    private async Task FlushAll()
+    {
+        var now = DateTime.UtcNow;
+        var selectTables = _tableStatusMap
+            .Where(kv => kv.Value.QueueLength >= 2500 || (now - kv.Value.LastFlushedAt).TotalSeconds >= 1)
+            .Select(kv => kv.Key)
+            .ToList();
+
+        await Parallel.ForEachAsync(selectTables, new ParallelOptions { MaxDegreeOfParallelism = 4 }, async (table, token) =>
+        {
+            await FlushTable(table);
+        });
+    }
+
+    private async Task FlushTable(string tableName)
+    {
+        if (!_tableStatusMap.TryGetValue(tableName, out var status))
+        {
+            return;
+        }
+
+        while (status.QueueLength >= 2500)
+        {
+            var batch = new List<LogBase>();
+            while (batch.Count < 2500 && status.Queue.TryDequeue(out var log))
+            {
+                batch.Add(log);
+            }
+
+            if (batch.Count == 0)
+            {
+                break;
+            }
+
+            try
+            {
+                await InsertLogIntoMySQL(tableName, batch);
+                status.LastFlushedAt = DateTime.UtcNow;
+            }
+            catch (Exception ex)
+            {
+                LogSystem.Log.Error($"Insert failed for {tableName}, restoring logs. Error: {ex.Message}");
+                foreach (var log in batch)
+                {
+                    status.Queue.Enqueue(log);
+                }
+
+                break;
             }
         }
     }
@@ -99,14 +170,17 @@ public class LogRedisStreamManager
 
         using (var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write))
         {
+            if (!_insertCache.TryGetValue(tableName, out var cache))
+            {
+                var first = logEntries[0];
+                var props = first.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                var column = string.Join(", ", props.Select(p => p.Name));
+                cache = (column, props);
+                _insertCache[tableName] = cache;
+            }
+
             var sqlBuilder = new StringBuilder();
-            sqlBuilder.Append($"INSERT INTO {tableName} ");
-
-            var firstEntry = logEntries.First();
-            var properties = firstEntry.GetType().GetProperties();
-            string columns = string.Join(", ", properties.Select(p => p.Name));
-
-            sqlBuilder.Append($"({columns}) VALUES ");
+            sqlBuilder.Append($"INSERT INTO {tableName} ({cache.columns}) VALUES ");
 
             var valueList = new List<string>();
             var parameters = new DynamicParameters();
@@ -114,7 +188,7 @@ public class LogRedisStreamManager
             for (int i = 0; i < logEntries.Count; i++)
             {
                 var values = new List<string>();
-                foreach (var prop in properties)
+                foreach (var prop in cache.props)
                 {
                     string paramName = $"@{prop.Name}{i}";
                     values.Add(paramName);
