@@ -1,11 +1,14 @@
 ﻿using Dapper;
 using MemoryPack;
+using NATS.Client;
+using NATS.Client.Internals;
+using NATS.Client.JetStream;
 using System.Reflection;
 using DBContext = BlindServerCore.Database.DatabaseContextContainer;
 
 namespace LogAggregationServer;
 
-public class LogRedisStreamManager
+public class LogNatsManager : IDisposable
 {
     private class TableFlushStatus
     {
@@ -14,26 +17,48 @@ public class LogRedisStreamManager
         public int QueueLength => Queue.Count;
     }
 
-    RedisParameter _parameter;
-    private readonly ConcurrentDictionary<string, TableFlushStatus> _tableStatusMap = new();
-    private readonly ConcurrentDictionary<string, (string columns, PropertyInfo[] props)> _insertCache = new();
-    private CancellationTokenSource _cts;
+    private readonly IConnection m_connection;
+    private readonly IJetStream m_jetStream;
+    private readonly IJetStreamManagement m_jetStreamMgmt;
 
-    public LogRedisStreamManager(RedisParameter parameter)
+    private const string m_streamName = "LOG_STREAM";
+    private const string m_defaultSubjectPattern = "logs.*";
+    private readonly ConcurrentDictionary<string, TableFlushStatus> m_tableStatusMap = new();
+    private readonly ConcurrentDictionary<string, (string columns, PropertyInfo[] props)> m_insertCache = new();
+    private CancellationTokenSource m_cts;
+
+    public LogNatsManager()
     {
-        this._parameter = parameter;
-        _cts = new CancellationTokenSource();
-        StartFlushTimer(_cts.Token);
+        var opts = ConnectionFactory.GetDefaultOptions();
+        opts.Url = "nats://localhost:4222";
+
+        m_connection = new ConnectionFactory().CreateConnection(opts);
+        m_jetStream = m_connection.CreateJetStreamContext();
+        m_jetStreamMgmt = m_connection.CreateJetStreamManagementContext();
+
+        InitOrUpdateStream(m_defaultSubjectPattern);
+
+        m_cts = new CancellationTokenSource();
+        StartFlushTimer(m_cts.Token);
     }
 
-    public void Dispose()
+    public void LogToNatsJetStream<T>(T logData) where T : LogBase
     {
-        _cts?.Cancel();
+        if (logData == null)
+        {
+            return;
+        }
+
+        var subject = $"logs.{logData.GetTableName()}";
+        var data = MemoryPackSerializer.Serialize(logData);
+
+        m_jetStream.Publish(subject, data);
     }
 
     public void TestLogInsert()
     {
         var now = TimeUtils.GetTime();
+
         for (int i = 0; i < 100; i++)
         {
             var log = new LogItemGetDao()
@@ -44,7 +69,7 @@ public class LogRedisStreamManager
                 ObtainedAt = now
             };
 
-            LogToRedisStream(log);
+            LogToNatsJetStream(log);
         }
 
         for (int i = 0; i < 100; i++)
@@ -57,57 +82,85 @@ public class LogRedisStreamManager
                 RemovedAt = now
             };
 
-            LogToRedisStream(log);
+            LogToNatsJetStream(log);
         }
     }
 
-    public void CreateLogRedisStreamGroup()
+    public void SubscribeAllLogs()
     {
-        RedisCommand.StreamCreateGroup(_parameter);
-    }
-
-    public void LogToRedisStream<T>(T logData) where T : LogBase
-    {
-        var data = MemoryPackSerializer.Serialize(logData);
-        
-        RedisCommand.LogToRedisStream(_parameter, logData.GetTableName(), data);
-    }
-
-    public async Task ConsumeLogsAsync()
-    {
-        var entries = await RedisCommand.StreamGroupReadAsync(_parameter);
-        if (entries == null) return;
-
-        await Parallel.ForEachAsync(entries, new ParallelOptions { MaxDegreeOfParallelism = 4 }, async (entry, token) =>
+        EventHandler<MsgHandlerEventArgs> handler = (sender, args) =>
         {
             try
             {
-                string tableName = entry.Values.First(v => v.Name == "tableName").Value.ToString();
-                byte[] logDataBytes = (byte[])entry.Values.First(v => v.Name == "data").Value;
+                var subject = args.Message.Subject;
+                var tableName = subject.Split('.').Last();
 
-                if (!LogTableGenerator.LogTypeMapping.TryGetValue(tableName, out Type logClassType))
+                if (!LogTableGenerator.LogTypeMapping.TryGetValue(tableName, out Type logType))
                 {
                     LogSystem.Log.Error($"Unknown log type: {tableName}");
                     return;
                 }
 
-                var logData = MemoryPackSerializer.Deserialize(logClassType, logDataBytes) as LogBase;
+                var logData = MemoryPackSerializer.Deserialize(logType, args.Message.Data) as LogBase;
                 if (logData == null)
                 {
-                    LogSystem.Log.Error($"Failed to cast {logClassType.Name} to LogBase");
+                    LogSystem.Log.Error($"Failed to deserialize {tableName}");
                     return;
                 }
 
-                var status = _tableStatusMap.GetOrAdd(tableName, _ => new TableFlushStatus());
+                var status = m_tableStatusMap.GetOrAdd(tableName, _ => new TableFlushStatus());
                 status.Queue.Enqueue(logData);
-
-                await RedisCommand.ConsumeAsync(_parameter, entry.Id);
             }
             catch (Exception ex)
             {
-                LogSystem.Log.Error($"Error processing log: {ex}");
+                LogSystem.Log.Error($"Error handling message: {ex}");
             }
-        });
+            finally
+            {
+                args.Message.Ack();
+            }
+        };
+
+        m_jetStream.PushSubscribeAsync("logs.>", handler, false);
+    }
+
+    public void Dispose()
+    {
+        m_connection?.Dispose();
+    }
+
+    private void InitOrUpdateStream(string subject)
+    {
+        try
+        {
+            var streamInfo = m_jetStreamMgmt.GetStreamInfo(m_streamName);
+
+            // 이미 존재하는 경우: Subject 없으면 추가
+            if (!streamInfo.Config.Subjects.Contains(subject))
+            {
+                var updatedSubjects = new HashSet<string>(streamInfo.Config.Subjects) { subject };
+
+                var updatedConfig = StreamConfiguration.Builder(streamInfo.Config)
+                    .WithSubjects(updatedSubjects.ToArray())
+                    .Build();
+
+                m_jetStreamMgmt.UpdateStream(updatedConfig);
+                Console.WriteLine($"NATS Stream '{m_streamName}' updated with new subject: {subject}");
+            }
+        }
+        catch (NATSJetStreamException ex) when (ex.ErrorCode == 404)
+        {
+            // 스트림이 없을 경우 생성
+            var config = StreamConfiguration.Builder()
+                .WithName(m_streamName)
+                .WithSubjects(subject)
+                .WithStorageType(StorageType.File)
+                .WithMaxAge(Duration.OfHours(1))
+                .Build();
+
+            m_jetStreamMgmt.AddStream(config);
+            Console.WriteLine($"NATS Stream '{m_streamName}' created with subject: {subject}");
+        }
     }
 
     private void StartFlushTimer(CancellationToken token)
@@ -125,7 +178,7 @@ public class LogRedisStreamManager
     private async Task FlushAll()
     {
         var now = DateTime.UtcNow;
-        var selectTables = _tableStatusMap
+        var selectTables = m_tableStatusMap
             .Where(kv => kv.Value.QueueLength >= 2500 || (now - kv.Value.LastFlushedAt).TotalSeconds >= 1)
             .Select(kv => kv.Key)
             .ToList();
@@ -138,7 +191,7 @@ public class LogRedisStreamManager
 
     private async Task FlushTable(string tableName)
     {
-        if (!_tableStatusMap.TryGetValue(tableName, out var status))
+        if (!m_tableStatusMap.TryGetValue(tableName, out var status))
         {
             return;
         }
@@ -183,13 +236,13 @@ public class LogRedisStreamManager
 
         using (var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write))
         {
-            if (!_insertCache.TryGetValue(tableName, out var cache))
+            if (!m_insertCache.TryGetValue(tableName, out var cache))
             {
                 var first = logEntries[0];
                 var props = first.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
                 var column = string.Join(", ", props.Select(p => p.Name));
                 cache = (column, props);
-                _insertCache[tableName] = cache;
+                m_insertCache[tableName] = cache;
             }
 
             var sqlBuilder = new StringBuilder();
