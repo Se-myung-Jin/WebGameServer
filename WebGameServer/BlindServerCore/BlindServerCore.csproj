@@ -19,6 +19,7 @@
 
   <ItemGroup>
 	<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	<PackageReference Include="Confluent.Kafka" Version="2.10.0" />
 	<PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="MemoryPack" Version="1.21.4" />
 	<PackageReference Include="MemoryPack.Streaming" Version="1.21.4" />

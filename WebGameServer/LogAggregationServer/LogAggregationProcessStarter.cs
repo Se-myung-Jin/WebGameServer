@@ -6,16 +6,17 @@ public class LogAggregationProcessStarter : ProcessStarter
 {
     protected override async Task InitializeOthersAsync(ServiceConfig config)
     {
-        RedisParameter param = new RedisParameter() { Key = "log_stream", Value = "log_group", Member = "consumer1", DataCount = 10000, Kind = GlobalValue.GLOBAL_REDIS };
+        RedisParameter param = new RedisParameter() { Key = "log_stream", Value = "log_group", Member = "consumer1", DataCount = 10000, Kind = GlobalValue.CACHE_REDIS };
         LogRedisStreamManager redis = new LogRedisStreamManager(param);
-        redis.CreateLogRedisStreamGroup();
-        var manager = new LogNatsManager();
+        LogNatsManager nats = new LogNatsManager();
+        LogKafkaManager kafka = new LogKafkaManager();
 
-        new TimeJob(Global.ServiceStatusMonitor.Process, 30000, "JobThreadTest").Start();
-        new TimeJob(() => redis.TestLogInsert(), 5000, "consume1").Start();
+        redis.CreateLogRedisStreamGroup();
+
+        new TimeJob(Global.ServiceStatusMonitor.Process, 30000, "ServiceStatusMonitor").Start();
+
         new TimeJob(async () => await redis.ConsumeLogsAsync(), 1000, "consume1").Start();
-        new TimeJob(() => manager.TestLogInsert(), 5000, "test").Start();
-        new TimeJob(() => manager.SubscribeAllLogs(), 1000, "test").Start();
+        new TimeJob(() => nats.SubscribeAllLogs(), 1000, "test").Start();
     }
 
     protected override async Task InitializeServiceAsync(ServiceConfig config)
