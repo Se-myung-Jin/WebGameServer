@@ -238,7 +238,7 @@ public class LogKafkaManager
             return;
         }
 
-        using (var conn = DBContext.Instance.MySql.GetConnection(eMySqlKind.Write))
+        using (var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write))
         {
             if (!m_insertCache.TryGetValue(tableName, out var cache))
             {
