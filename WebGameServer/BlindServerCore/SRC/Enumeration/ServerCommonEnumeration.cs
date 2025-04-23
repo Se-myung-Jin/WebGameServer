@@ -6,6 +6,7 @@ public enum ServerType
     Maintenance,
     Game,
     LogAggregation,
+    LogAnalytics,
 };
 
 public enum DataBaseCategory
