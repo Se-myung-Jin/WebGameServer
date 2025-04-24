@@ -85,27 +85,11 @@ public class LogKafkaManager
     {
         var now = TimeUtils.GetTime();
 
-        for (int i = 0; i < 10000; i++)
+        for (int i = 0; i < 100; i++)
         {
-            var log = new LogItemGetDao()
+            var log = new LogAuthDao()
             {
                 UserId = 1111,
-                ItemId = 2222,
-                Quantity = 3,
-                ObtainedAt = now
-            };
-
-            _ = LogToKafka(log);
-        }
-
-        for (int i = 0; i < 10000; i++)
-        {
-            var log = new LogItemRemoveDao()
-            {
-                Id = i,
-                LogLevel = "warn",
-                Message = "Hello",
-                RemovedAt = now
             };
 
             _ = LogToKafka(log);

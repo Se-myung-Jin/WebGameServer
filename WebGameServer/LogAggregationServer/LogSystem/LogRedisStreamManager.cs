@@ -31,39 +31,23 @@ public class LogRedisStreamManager
         _cts?.Cancel();
     }
 
+    public void CreateLogRedisStreamGroup()
+    {
+        RedisCommand.StreamCreateGroup(_parameter);
+    }
+
     public void TestLogInsert()
     {
         var now = TimeUtils.GetTime();
         for (int i = 0; i < 100; i++)
         {
-            var log = new LogItemGetDao()
+            var log = new LogAuthDao()
             {
                 UserId = 1111,
-                ItemId = 2222,
-                Quantity = 3,
-                ObtainedAt = now
             };
 
             LogToRedisStream(log);
         }
-
-        for (int i = 0; i < 100; i++)
-        {
-            var log = new LogItemRemoveDao()
-            {
-                Id = i,
-                LogLevel = "warn",
-                Message = "Hello",
-                RemovedAt = now
-            };
-
-            LogToRedisStream(log);
-        }
-    }
-
-    public void CreateLogRedisStreamGroup()
-    {
-        RedisCommand.StreamCreateGroup(_parameter);
     }
 
     public void LogToRedisStream<T>(T logData) where T : LogBase
@@ -143,34 +127,31 @@ public class LogRedisStreamManager
             return;
         }
 
-        while (status.QueueLength >= 2500)
+        var batch = new List<LogBase>();
+        while (batch.Count < 2500 && status.Queue.TryDequeue(out var log))
         {
-            var batch = new List<LogBase>();
-            while (batch.Count < 2500 && status.Queue.TryDequeue(out var log))
+            batch.Add(log);
+        }
+
+        if (batch.Count == 0)
+        {
+            return;
+        }
+
+        try
+        {
+            await InsertLogIntoMySQL(tableName, batch);
+            status.LastFlushedAt = DateTime.UtcNow;
+        }
+        catch (Exception ex)
+        {
+            LogSystem.Log.Error($"Insert failed for {tableName}, restoring logs. Error: {ex.Message}");
+            foreach (var log in batch)
             {
-                batch.Add(log);
+                status.Queue.Enqueue(log);
             }
 
-            if (batch.Count == 0)
-            {
-                break;
-            }
-
-            try
-            {
-                await InsertLogIntoMySQL(tableName, batch);
-                status.LastFlushedAt = DateTime.UtcNow;
-            }
-            catch (Exception ex)
-            {
-                LogSystem.Log.Error($"Insert failed for {tableName}, restoring logs. Error: {ex.Message}");
-                foreach (var log in batch)
-                {
-                    status.Queue.Enqueue(log);
-                }
-
-                break;
-            }
+            return;
         }
     }
 

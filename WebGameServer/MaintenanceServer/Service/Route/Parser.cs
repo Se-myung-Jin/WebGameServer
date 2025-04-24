@@ -51,7 +51,7 @@ public class WebRequestMemoryPackParser : WebRequestParser
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return default;
@@ -65,7 +65,7 @@ public class WebRequestMemoryPackParser : WebRequestParser
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
 
         return default;
@@ -79,7 +79,7 @@ public class WebRequestMemoryPackParser : WebRequestParser
         }
         catch (Exception ex)
         {
-
+            LogSystem.Log.Error(ex);
         }
     }
 }

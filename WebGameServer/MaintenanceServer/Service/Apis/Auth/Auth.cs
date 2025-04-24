@@ -75,6 +75,9 @@ public partial class RestApiRouter
         */
         await ProxyCommand.Instance.Redis.SaveAccountAsync(auth.Account, response.Token);
 
+        var log = new LogAuthDao() { UserId = auth.Account.UserId, AccountType = auth.Account.AccountType, Publisher = (byte)pkt.Publisher };
+        LogWriter.LogToRedisStream(log);
+
         return response;
     }
 }

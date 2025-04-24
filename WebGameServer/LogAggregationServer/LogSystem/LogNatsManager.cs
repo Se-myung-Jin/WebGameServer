@@ -61,25 +61,9 @@ public class LogNatsManager : IDisposable
 
         for (int i = 0; i < 100; i++)
         {
-            var log = new LogItemGetDao()
+            var log = new LogAuthDao()
             {
                 UserId = 1111,
-                ItemId = 2222,
-                Quantity = 3,
-                ObtainedAt = now
-            };
-
-            LogToNatsJetStream(log);
-        }
-
-        for (int i = 0; i < 100; i++)
-        {
-            var log = new LogItemRemoveDao()
-            {
-                Id = i,
-                LogLevel = "warn",
-                Message = "Hello",
-                RemovedAt = now
             };
 
             LogToNatsJetStream(log);

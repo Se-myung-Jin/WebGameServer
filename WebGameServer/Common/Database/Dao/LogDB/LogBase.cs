@@ -4,10 +4,11 @@ using System.Reflection;
 namespace Common.Database.Dao;
 
 [MemoryPackable]
-[MemoryPackUnion(1, typeof(LogItemGetDao))]
-[MemoryPackUnion(2, typeof(LogItemRemoveDao))]
+[MemoryPackUnion(1, typeof(LogAuthDao))]
 public abstract partial class LogBase
 {
+    public DateTime LogTime { get; set; } = DateTime.UtcNow;
+
     private LogTableAttribute LogTableAttr => this.GetType().GetCustomAttribute<LogTableAttribute>();
 
     public string GetTableName()
