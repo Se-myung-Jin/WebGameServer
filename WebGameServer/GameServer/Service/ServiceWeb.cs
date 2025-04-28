@@ -8,7 +8,7 @@ namespace GameServer;
 
 public class ServiceWeb : Singleton<ServiceWeb>
 {
-    private WebApplication application;
+    private WebApplication _application;
 
     public async Task StartAsync(string url, string[] args)
     {
@@ -21,8 +21,8 @@ public class ServiceWeb : Singleton<ServiceWeb>
 
         builder.Host.ConfigureHostOptions(opt => opt.ShutdownTimeout = TimeSpan.FromSeconds(30));
 
-        application = builder.Build();
-        application.UseCors(builder =>
+        _application = builder.Build();
+        _application.UseCors(builder =>
         {
             builder.WithOrigins()
                    .SetIsOriginAllowed((host) => true)
@@ -33,24 +33,24 @@ public class ServiceWeb : Singleton<ServiceWeb>
         
         RestApiRouter.Instance.Initialize();
 
-        application.MapGet("/Hello", async (HttpContext context) => await context.Response.WriteAsync("Hello"));
-        application.MapPost("/RestApi/{name:alpha}", async (HttpContext context) => await RestApiRouter.Instance.Process(context));
+        _application.MapGet("/Hello", async (HttpContext context) => await context.Response.WriteAsync("Hello"));
+        _application.MapPost("/RestApi/{name:alpha}", async (HttpContext context) => await RestApiRouter.Instance.Process(context));
 
-        application.Use((context, next) =>
+        _application.Use((context, next) =>
         {
             return next(context);
         });
 
-        await application.RunAsync(url);
+        await _application.RunAsync(url);
     }
 
     public async Task StopAsync()
     {
-        if (application == null)
+        if (_application == null)
         {
             return;
         }
 
-        await application.StopAsync();
+        await _application.StopAsync();
     }
 }

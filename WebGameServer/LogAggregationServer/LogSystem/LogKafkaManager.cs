@@ -15,9 +15,9 @@ public class LogKafkaManager
         public int QueueLength => Queue.Count;
     }
 
-    private readonly ConcurrentDictionary<string, TableFlushStatus> m_tableStatusMap = new();
-    private readonly ConcurrentDictionary<string, (string columns, PropertyInfo[] props)> m_insertCache = new();
-    private CancellationTokenSource m_cts;
+    private readonly ConcurrentDictionary<string, TableFlushStatus> _tableStatusMap = new();
+    private readonly ConcurrentDictionary<string, (string columns, PropertyInfo[] props)> _insertCache = new();
+    private CancellationTokenSource _cts;
     private readonly IProducer<string, byte[]> _producer;
     private readonly IConsumer<string, byte[]> _consumer;
     private readonly string _topic;
@@ -50,8 +50,8 @@ public class LogKafkaManager
 
         _topic = topic;
 
-        m_cts = new CancellationTokenSource();
-        StartFlushTimer(m_cts.Token);
+        _cts = new CancellationTokenSource();
+        StartFlushTimer(_cts.Token);
         ConsumeKafkaLogsAsync();
     }
 
@@ -106,7 +106,7 @@ public class LogKafkaManager
 
             try
             {
-                while (!m_cts.Token.IsCancellationRequested)
+                while (!_cts.Token.IsCancellationRequested)
                 {
                     var batch = new List<ConsumeResult<string, byte[]>>();
                     var endTime = DateTime.UtcNow.AddMilliseconds(100);
@@ -130,7 +130,7 @@ public class LogKafkaManager
                         if (logData == null)
                             return;
 
-                        var status = m_tableStatusMap.GetOrAdd(tableName, _ => new TableFlushStatus());
+                        var status = _tableStatusMap.GetOrAdd(tableName, _ => new TableFlushStatus());
                         status.Queue.Enqueue(logData);
                     });
 
@@ -166,7 +166,7 @@ public class LogKafkaManager
     private async Task FlushAll()
     {
         var now = DateTime.UtcNow;
-        var selectTables = m_tableStatusMap
+        var selectTables = _tableStatusMap
             .Where(kv => kv.Value.QueueLength >= 2500 || (now - kv.Value.LastFlushedAt).TotalSeconds >= 1)
             .Select(kv => kv.Key)
             .ToList();
@@ -179,7 +179,7 @@ public class LogKafkaManager
 
     private async Task FlushTable(string tableName)
     {
-        if (!m_tableStatusMap.TryGetValue(tableName, out var status))
+        if (!_tableStatusMap.TryGetValue(tableName, out var status))
         {
             return;
         }
@@ -224,13 +224,13 @@ public class LogKafkaManager
 
         using (var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write))
         {
-            if (!m_insertCache.TryGetValue(tableName, out var cache))
+            if (!_insertCache.TryGetValue(tableName, out var cache))
             {
                 var first = logEntries[0];
                 var props = first.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
                 var column = string.Join(", ", props.Select(p => p.Name));
                 cache = (column, props);
-                m_insertCache[tableName] = cache;
+                _insertCache[tableName] = cache;
             }
 
             var sqlBuilder = new StringBuilder();

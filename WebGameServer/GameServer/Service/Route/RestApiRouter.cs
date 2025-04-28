@@ -7,14 +7,14 @@ namespace GameServer;
 
 public partial class RestApiRouter : Singleton<RestApiRouter>
 {
-    private Dictionary<string, Func<string, IWebPacket, Task<IWebPacket>>> apiCallBack;
-    private WebRequestParser m_parser = new WebRequestMemoryPackParser();
+    private Dictionary<string, Func<string, IWebPacket, Task<IWebPacket>>> _apiCallBack;
+    private WebRequestParser _parser = new WebRequestMemoryPackParser();
 
     public void Initialize()
     {
         var classMethods = CommonCustomAttribute.FindMethodAndAttributes(typeof(ApiHandleAttribute), BindingFlags.Instance | BindingFlags.NonPublic);
 
-        apiCallBack = new(classMethods.Count);
+        _apiCallBack = new(classMethods.Count);
 
         foreach (var element in classMethods)
         {
@@ -24,8 +24,8 @@ public partial class RestApiRouter : Singleton<RestApiRouter>
             {
                 var parameters = method.GetParameters().Select(p => Expression.Parameter(p.ParameterType.BaseType == typeof(IWebPacket) ? p.ParameterType.BaseType : p.ParameterType, p.Name)).ToArray();
                 var call = Expression.Call(Expression.Constant(this), method, parameters);
-                
-                apiCallBack.Add(name, Expression.Lambda<Func<string, IWebPacket, Task<IWebPacket>>>(call, parameters).Compile());
+
+                _apiCallBack.Add(name, Expression.Lambda<Func<string, IWebPacket, Task<IWebPacket>>>(call, parameters).Compile());
             }
             catch (Exception ex)
             {
@@ -45,9 +45,9 @@ public partial class RestApiRouter : Singleton<RestApiRouter>
 
         try
         {
-            if (apiCallBack.TryGetValue(api, out var call))
+            if (_apiCallBack.TryGetValue(api, out var call))
             {
-                var requestObject = await m_parser.ReadAsync(context);
+                var requestObject = await _parser.ReadAsync(context);
                 if (requestObject != null)
                 {
                     responseObject = await call.Invoke(remoteIp, requestObject);
@@ -62,7 +62,7 @@ public partial class RestApiRouter : Singleton<RestApiRouter>
         {
             responseObject = responseObject ?? new PKT_WEB_SC_INTERNALERROR() { Message = "CODE-19" };
 
-            await m_parser.WriteAsync(context, responseObject);
+            await _parser.WriteAsync(context, responseObject);
         }
     }
 

@@ -7,7 +7,7 @@ namespace ScheduleServer;
 
 public class ServiceWeb : Singleton<ServiceWeb>
 {
-    private WebApplication m_application;
+    private WebApplication _application;
 
     public async Task StartAsync(string url, string[] args)
     {
@@ -23,9 +23,9 @@ public class ServiceWeb : Singleton<ServiceWeb>
         // Wait 30 seconds for graceful shutdown.
         builder.Host.ConfigureHostOptions(o => o.ShutdownTimeout = TimeSpan.FromSeconds(30));
 
-        m_application = builder.Build();
+        _application = builder.Build();
 
-        m_application.UseCors(builder =>
+        _application.UseCors(builder =>
         {
             builder.WithOrigins()
                 .SetIsOriginAllowed((host) => true)
@@ -35,22 +35,22 @@ public class ServiceWeb : Singleton<ServiceWeb>
             .AllowCredentials();
         });
 
-        m_application.Use((context, next) =>
+        _application.Use((context, next) =>
         {
             // Put a breakpoint here
             return next(context);
         });
 
-        await m_application.RunAsync(url);
+        await _application.RunAsync(url);
     }
 
     public async Task StopAsync()
     {
-        if (m_application == null)
+        if (_application == null)
         {
             return;
         }
 
-        await m_application.StopAsync();
+        await _application.StopAsync();
     }
 }

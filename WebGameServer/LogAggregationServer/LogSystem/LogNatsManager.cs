@@ -17,29 +17,29 @@ public class LogNatsManager : IDisposable
         public int QueueLength => Queue.Count;
     }
 
-    private readonly IConnection m_connection;
-    private readonly IJetStream m_jetStream;
-    private readonly IJetStreamManagement m_jetStreamMgmt;
+    private readonly IConnection _connection;
+    private readonly IJetStream _jetStream;
+    private readonly IJetStreamManagement _jetStreamMgmt;
 
-    private const string m_streamName = "LOG_STREAM";
-    private const string m_defaultSubjectPattern = "logs.*";
-    private readonly ConcurrentDictionary<string, TableFlushStatus> m_tableStatusMap = new();
-    private readonly ConcurrentDictionary<string, (string columns, PropertyInfo[] props)> m_insertCache = new();
-    private CancellationTokenSource m_cts;
+    private const string _streamName = "LOG_STREAM";
+    private const string _defaultSubjectPattern = "logs.*";
+    private readonly ConcurrentDictionary<string, TableFlushStatus> _tableStatusMap = new();
+    private readonly ConcurrentDictionary<string, (string columns, PropertyInfo[] props)> _insertCache = new();
+    private CancellationTokenSource _cts;
 
     public LogNatsManager()
     {
         var opts = ConnectionFactory.GetDefaultOptions();
         opts.Url = "nats://localhost:4222";
 
-        m_connection = new ConnectionFactory().CreateConnection(opts);
-        m_jetStream = m_connection.CreateJetStreamContext();
-        m_jetStreamMgmt = m_connection.CreateJetStreamManagementContext();
+        _connection = new ConnectionFactory().CreateConnection(opts);
+        _jetStream = _connection.CreateJetStreamContext();
+        _jetStreamMgmt = _connection.CreateJetStreamManagementContext();
 
-        InitOrUpdateStream(m_defaultSubjectPattern);
+        InitOrUpdateStream(_defaultSubjectPattern);
 
-        m_cts = new CancellationTokenSource();
-        StartFlushTimer(m_cts.Token);
+        _cts = new CancellationTokenSource();
+        StartFlushTimer(_cts.Token);
     }
 
     public void LogToNatsJetStream<T>(T logData) where T : LogBase
@@ -52,7 +52,7 @@ public class LogNatsManager : IDisposable
         var subject = $"logs.{logData.GetTableName()}";
         var data = MemoryPackSerializer.Serialize(logData);
 
-        m_jetStream.Publish(subject, data);
+        _jetStream.Publish(subject, data);
     }
 
     public void TestLogInsert()
@@ -92,7 +92,7 @@ public class LogNatsManager : IDisposable
                     return;
                 }
 
-                var status = m_tableStatusMap.GetOrAdd(tableName, _ => new TableFlushStatus());
+                var status = _tableStatusMap.GetOrAdd(tableName, _ => new TableFlushStatus());
                 status.Queue.Enqueue(logData);
             }
             catch (Exception ex)
@@ -105,19 +105,19 @@ public class LogNatsManager : IDisposable
             }
         };
 
-        m_jetStream.PushSubscribeAsync("logs.>", handler, false);
+        _jetStream.PushSubscribeAsync("logs.>", handler, false);
     }
 
     public void Dispose()
     {
-        m_connection?.Dispose();
+        _connection?.Dispose();
     }
 
     private void InitOrUpdateStream(string subject)
     {
         try
         {
-            var streamInfo = m_jetStreamMgmt.GetStreamInfo(m_streamName);
+            var streamInfo = _jetStreamMgmt.GetStreamInfo(_streamName);
 
             // 이미 존재하는 경우: Subject 없으면 추가
             if (!streamInfo.Config.Subjects.Contains(subject))
@@ -128,22 +128,22 @@ public class LogNatsManager : IDisposable
                     .WithSubjects(updatedSubjects.ToArray())
                     .Build();
 
-                m_jetStreamMgmt.UpdateStream(updatedConfig);
-                Console.WriteLine($"NATS Stream '{m_streamName}' updated with new subject: {subject}");
+                _jetStreamMgmt.UpdateStream(updatedConfig);
+                Console.WriteLine($"NATS Stream '{_streamName}' updated with new subject: {subject}");
             }
         }
         catch (NATSJetStreamException ex) when (ex.ErrorCode == 404)
         {
             // 스트림이 없을 경우 생성
             var config = StreamConfiguration.Builder()
-                .WithName(m_streamName)
+                .WithName(_streamName)
                 .WithSubjects(subject)
                 .WithStorageType(StorageType.File)
                 .WithMaxAge(Duration.OfHours(1))
                 .Build();
 
-            m_jetStreamMgmt.AddStream(config);
-            Console.WriteLine($"NATS Stream '{m_streamName}' created with subject: {subject}");
+            _jetStreamMgmt.AddStream(config);
+            Console.WriteLine($"NATS Stream '{_streamName}' created with subject: {subject}");
         }
     }
 
@@ -162,7 +162,7 @@ public class LogNatsManager : IDisposable
     private async Task FlushAll()
     {
         var now = DateTime.UtcNow;
-        var selectTables = m_tableStatusMap
+        var selectTables = _tableStatusMap
             .Where(kv => kv.Value.QueueLength >= 2500 || (now - kv.Value.LastFlushedAt).TotalSeconds >= 1)
             .Select(kv => kv.Key)
             .ToList();
@@ -175,7 +175,7 @@ public class LogNatsManager : IDisposable
 
     private async Task FlushTable(string tableName)
     {
-        if (!m_tableStatusMap.TryGetValue(tableName, out var status))
+        if (!_tableStatusMap.TryGetValue(tableName, out var status))
         {
             return;
         }
@@ -220,13 +220,13 @@ public class LogNatsManager : IDisposable
 
         using (var conn = DBContext.Instance.MySql.GetConnection(MySqlKind.Write))
         {
-            if (!m_insertCache.TryGetValue(tableName, out var cache))
+            if (!_insertCache.TryGetValue(tableName, out var cache))
             {
                 var first = logEntries[0];
                 var props = first.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
                 var column = string.Join(", ", props.Select(p => p.Name));
                 cache = (column, props);
-                m_insertCache[tableName] = cache;
+                _insertCache[tableName] = cache;
             }
 
             var sqlBuilder = new StringBuilder();
