@@ -28,6 +28,13 @@ public class LogAnalyticsConfig
     public bool Enable { get; set; }
 }
 
+public class ScheduleConfig
+{
+    public string Url { get; set; }
+    public string Domain { get; set; }
+    public bool Enable { get; set; }
+}
+
 public class ConfigDatabase
 {
     public string Name { get; set; }
@@ -79,6 +86,7 @@ public class ServiceConfig
     public MaintenanceConfig MaintenanceConfig { get; set; }
     public LogAggregationConfig LogAggregationConfig { get; set; }
     public LogAnalyticsConfig LogAnalyticsConfig { get; set; }
+    public ScheduleConfig ScheduleConfig { get; set; }
     public ConfigDatabase ConfigDatabase { get; set; }
 
     public async Task InitializeAsync()

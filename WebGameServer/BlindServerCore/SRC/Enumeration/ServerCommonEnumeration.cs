@@ -7,6 +7,7 @@ public enum ServerType
     Game,
     LogAggregation,
     LogAnalytics,
+    Schedule,
 };
 
 public enum DataBaseCategory
