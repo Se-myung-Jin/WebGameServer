@@ -6,6 +6,7 @@ public abstract class ServiceCommon
 {
     public static ServiceStatusMonitor ServiceStatusMonitor = new();
     public static ServiceConfig ServiceConfig;
+    public static PubSubManager ServicePubSub;
 
     public static string GetCommitHash()
     {

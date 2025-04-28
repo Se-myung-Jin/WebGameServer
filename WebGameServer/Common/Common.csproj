@@ -21,11 +21,8 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <Compile Remove="NewFolder\**" />
     <Compile Remove="Release_Linux\**" />
-    <EmbeddedResource Remove="NewFolder\**" />
     <EmbeddedResource Remove="Release_Linux\**" />
-    <None Remove="NewFolder\**" />
     <None Remove="Release_Linux\**" />
   </ItemGroup>
 	

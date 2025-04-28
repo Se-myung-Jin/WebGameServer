@@ -14,6 +14,12 @@ public class Global : ServiceCommon
         SystemGlobal.Instance.StartScheduler();
     }
 
+    public static async Task PostProcessAsync()
+    {
+        ServicePubSub = new LogPubSub();
+        await ServicePubSub.InitializeAsync();
+    }
+
     public static void Destruct()
     {
         ServiceWeb.Instance.StopAsync().Wait();

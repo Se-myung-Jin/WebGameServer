@@ -18,6 +18,7 @@ public class ServiceWeb : Singleton<ServiceWeb>
         //builder.Host.UseNLog();
 
         builder.Services.AddCors();
+        builder.Services.AddHostedService<MetricsJobScheduler>();
         //builder.Services.AddSignalR().AddJsonProtocol();
 
         // Wait 30 seconds for graceful shutdown.

@@ -5,6 +5,9 @@ namespace Common.Database.Dao;
 
 [MemoryPackable]
 [MemoryPackUnion(1, typeof(LogAuthDao))]
+[MemoryPackUnion(2, typeof(LogCCUDao))]
+[MemoryPackUnion(3, typeof(LogKPIMetricsDao))]
+[MemoryPackUnion(4, typeof(LogNewAccountDao))]
 public abstract partial class LogBase
 {
     public DateTime LogTime { get; set; } = DateTime.UtcNow;

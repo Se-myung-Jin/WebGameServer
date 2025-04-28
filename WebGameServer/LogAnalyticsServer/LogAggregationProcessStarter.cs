@@ -7,6 +7,8 @@ public class LogAnalyticsProcessStarter : ProcessStarter
     protected override async Task InitializeOthersAsync(ServiceConfig config)
     {
         new TimeJob(Global.ServiceStatusMonitor.Process, 30000, "ServiceStatusMonitor").Start();
+
+        await Global.PostProcessAsync();
     }
 
     protected override async Task InitializeServiceAsync(ServiceConfig config)
