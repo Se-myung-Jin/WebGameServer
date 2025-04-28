@@ -1,4 +1,4 @@
-[LogAggregationConfig]
+[LogAnalyticsConfig]
 Url = "http://*:17001"
 Domain = "http://172.16.13.183:16001"
 Enable = true

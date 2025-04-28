@@ -13,9 +13,9 @@ public class LogAnalyticsProcessStarter : ProcessStarter
 
     protected override async Task InitializeServiceAsync(ServiceConfig config)
     {
-        if (Global.ServiceConfig.LogAggregationConfig.Enable)
+        if (Global.ServiceConfig.LogAnalyticsConfig.Enable)
         {
-            await ServiceWeb.Instance.StartAsync(Global.ServiceConfig.LogAggregationConfig.Url, null);
+            await ServiceWeb.Instance.StartAsync(Global.ServiceConfig.LogAnalyticsConfig.Url, null);
         }
     }
 

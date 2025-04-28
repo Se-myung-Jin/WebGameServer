@@ -21,6 +21,13 @@ public class LogAggregationConfig
     public bool Enable { get; set; }
 }
 
+public class LogAnalyticsConfig
+{
+    public string Url { get; set; }
+    public string Domain { get; set; }
+    public bool Enable { get; set; }
+}
+
 public class ConfigDatabase
 {
     public string Name { get; set; }
@@ -71,6 +78,7 @@ public class ServiceConfig
     public GameConfig GameConfig { get; set; }
     public MaintenanceConfig MaintenanceConfig { get; set; }
     public LogAggregationConfig LogAggregationConfig { get; set; }
+    public LogAnalyticsConfig LogAnalyticsConfig { get; set; }
     public ConfigDatabase ConfigDatabase { get; set; }
 
     public async Task InitializeAsync()
