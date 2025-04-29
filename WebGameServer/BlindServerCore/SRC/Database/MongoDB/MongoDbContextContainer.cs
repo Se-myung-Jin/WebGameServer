@@ -8,6 +8,7 @@ using MongoDB.Driver;
 
 namespace BlindServerCore.Database;
 
+[AttributeUsage(AttributeTargets.Class)]
 public class TableAttribute : Attribute
 {
     public readonly string DbName;
@@ -60,11 +61,7 @@ public class MongoDbContextContainer
     private Dictionary<MongoDbKind, MongoClient> _connectionMap = new();
     private Dictionary<Type, TableAttribute> _typeToNameMap = new();
 
-    public void Initialize()
-    {
-        CreateIndex();
-    }
-
+    public void Initialize() => CreateIndex();
     public MongoClient Add(DBConfig config)
     {
         Enum.TryParse(config.Name, out MongoDbKind typeName);
@@ -76,12 +73,12 @@ public class MongoDbContextContainer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MongoClient Client(MongoDbKind name) => _connectionMap[name];
+    public MongoClient Client(MongoDbKind dbKind) => _connectionMap[dbKind];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IMongoDatabase Database(MongoDbKind name, string dbName) => _connectionMap[name].GetDatabase(dbName);
+    public IMongoDatabase Database(MongoDbKind dbKind, string dbName) => Client(dbKind).GetDatabase(dbName);
 
-    public IMongoCollection<T> GetTable<T>(MongoDbKind name, string dbName, string table) => _connectionMap[name].GetDatabase(dbName).GetCollection<T>(table);
+    public IMongoCollection<T> GetTable<T>(MongoDbKind dbKind, string dbName, string table) => Database(dbKind, dbName).GetCollection<T>(table);
 
     public IMongoCollection<T> GetCollection<T>()
     {
@@ -115,7 +112,7 @@ public class MongoDbContextContainer
         return (tblAttribute.DbName, tblAttribute.TableName, tblAttribute.Kind, tblAttribute.EnableShading);
     }
 
-    public void Destory()
+    public void Destroy()
     {
         foreach (var connection in _connectionMap.Values)
         {
@@ -145,21 +142,6 @@ public class MongoDbContextContainer
 
                     var databaseName = database.DatabaseNamespace.DatabaseName;
                     var collectionName = collection.CollectionNamespace.CollectionName;
-                    /*
-                    try
-                    {
-                        //BsonDocument parameter = adminDb.RunCommand<BsonDocument>(BsonDocument.Parse("{ getParameter: 1, featureCompatibilityVersion: 1 }"));
-                        var shardDbResult = adminDb.RunCommand<MongoDB.Bson.BsonDocument>(new MongoDB.Bson.BsonDocument( "enableSharding", $"{databaseName}"));
-                        var shardScript = $"{{shardCollection: \"{databaseName}.{collectionName}\"}}";
-                        var commandDict = new Dictionary<string, object>() { { "shardCollection", $"{databaseName}.{collectionName}" }, { "key", new Dictionary<string, object>() { { "_id", "hashed" } } } };
-                        var commandDoc = new BsonDocumentCommand<MongoDB.Bson.BsonDocument>(new MongoDB.Bson.BsonDocument(commandDict));
-                        var response = adminDb.RunCommand(commandDoc);
-                    }
-                    catch (Exception ex)
-                    {
-                        LogSystem.Log.Error(ex);
-                    }
-                    */
                 }
 
                 List<CreateIndexModel<BsonDocument>> createList = new();

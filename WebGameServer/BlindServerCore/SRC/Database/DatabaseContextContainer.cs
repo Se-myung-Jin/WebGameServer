@@ -61,6 +61,8 @@ public sealed class DatabaseContextContainer
 
     public void Destory()
     {
-
+        MongoDb.Destroy();
+        Redis.Destory();
+        MySql.Destroy();
     }
 }

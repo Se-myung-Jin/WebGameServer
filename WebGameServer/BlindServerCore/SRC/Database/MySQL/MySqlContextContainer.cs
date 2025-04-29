@@ -1,4 +1,5 @@
-﻿using MySqlConnector;
+﻿using BlindServerCore.Log;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ public class LogTableAttribute : Attribute
     }
 }
 
-public class MySqlContextContainer
+public class MySqlContextContainer : IDisposable
 {
     private readonly Dictionary<MySqlKind, MySqlConnection> _connectionMap = new();
 
@@ -81,9 +82,21 @@ public class MySqlContextContainer
     {
         foreach (var connection in _connectionMap.Values)
         {
-            connection.Dispose();
+            try
+            {
+                connection.Dispose();
+            }
+            catch (Exception ex)
+            {
+                LogSystem.Log.Error(ex);
+            }
         }
 
         _connectionMap.Clear();
+    }
+
+    public void Dispose()
+    {
+        Destroy();
     }
 }
